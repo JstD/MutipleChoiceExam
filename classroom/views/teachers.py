@@ -30,6 +30,49 @@ class TeacherSignUpView(CreateView):
         # return redirect('teachers:quiz_change_list')
         return HttpResponse("Hello" + user.username)
 
+@method_decorator([login_required, teacher_required], name='dispatch')
+class SubjectListView(ListView):
+    model = Subject
+    # ordering = ('name', )
+    # context_object_name = 'quizzes'
+    template_name = 'classroom/teachers/subject_list.html'
+
+    # def get_queryset(self):
+    #     queryset = self.request.user.quizzes \
+    #         .select_related('subject') \
+    #         .annotate(questions_count=Count('questions', distinct=True)) \
+    #         .annotate(taken_count=Count('taken_quizzes', distinct=True))
+    #     return queryset
+
+
+@method_decorator([login_required, teacher_required], name='dispatch')
+class SubjectDetailView(DetailView):
+    model = Subject
+    # context_object_name = 'quiz'
+    # template_name = 'classroom/teachers/quiz_results.html'
+    template_name = 'classroom/teachers/subject_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        subject = self.get_object()
+        examtimes = subject.examtime_set.all()
+        context["examtimes"] = examtimes
+        return context
+        # quiz = self.get_object()
+        # taken_quizzes = quiz.taken_quizzes.select_related('student__user').order_by('-date')
+        # total_taken_quizzes = taken_quizzes.count()
+        # quiz_score = quiz.taken_quizzes.aggregate(average_score=Avg('score'))
+        # extra_context = {
+        #     'taken_quizzes': taken_quizzes,
+        #     'total_taken_quizzes': total_taken_quizzes,
+        #     'quiz_score': quiz_score
+        # }
+        # kwargs.update(extra_context)
+        # return super().get_context_data(**kwargs)
+
+    def get_queryset(self):
+        return self.request.user.teacher.subjects.all()
+
 
 # @method_decorator([login_required, teacher_required], name='dispatch')
 # class QuizListView(ListView):
