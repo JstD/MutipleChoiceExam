@@ -32,13 +32,12 @@ class Outcome(models.Model):
 
 class User(AbstractUser):
     middle_name = models.CharField(max_length=50, blank=True, null=True)
-    sex = models.CharField(max_length=1, blank=True, null=True)
+    SEX_CHOICE = [('M', 'Male'), ('F', 'Female')]
+    sex = models.CharField(max_length=1, choices=SEX_CHOICE, blank=True, null=True)
     address = models.CharField(max_length=255, blank=True, null=True)
     faculty = models.CharField(max_length=255, blank=True, null=True)
     is_student = models.BooleanField(default=False)
     is_teacher = models.BooleanField(default=False)
-    is_manager = models.BooleanField(default=False)
-    is_mainteacher = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'User'
@@ -55,7 +54,8 @@ class Teacher(models.Model):
 class Teach(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    role = models.CharField(max_length=7, blank=True, null=True)
+    ROLE_CHOICE = [('Manager', 'Manager'), ('Main', 'Main'), ('Normal', 'Normal')]
+    role = models.CharField(max_length=7, choices=ROLE_CHOICE, blank=True, null=True)
     class Meta:
         # managed = False
         db_table = 'Teach'
@@ -135,7 +135,8 @@ class Questionpresentation(models.Model):
 class Answerorder(models.Model):
     qpresentation = models.ForeignKey('Questionpresentation', on_delete=models.CASCADE)
     answerid = models.PositiveIntegerField()
-    option = models.CharField(max_length=1)
+    OPTION_CHOICE = [('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D'), ('E', 'E')]
+    option = models.CharField(max_length=1, choices=OPTION_CHOICE)
 
     class Meta:
         # managed = False
@@ -158,7 +159,8 @@ class Student(models.Model):
 class Answerpart(models.Model):
     question = models.ForeignKey('Question', on_delete=models.CASCADE)
     answerid = models.PositiveIntegerField()
-    result = models.CharField(max_length=5, blank=True, null=True)
+    RESULT_CHOICE = [('T', 'True'), ('F', 'False')]
+    result = models.CharField(max_length=1, choices=RESULT_CHOICE, blank=True, null=True)
     content = models.OneToOneField('Content', on_delete=models.CASCADE)
 
     class Meta:
