@@ -94,9 +94,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'multiple_choice_exam',
         'USER': 'root',
-        'PASSWORD': 'aBcDe@12345',
+        'PASSWORD': '8pJ-:G&b}aPUP9*6',
         'HOST': 'localhost',
-        'PORT': '5432',
+        'PORT': '3306',
     }
 }
 
