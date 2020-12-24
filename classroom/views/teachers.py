@@ -52,9 +52,9 @@ class SubjectDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         subject = self.get_object()
-        examtimes = subject.examtime_set.all()
-        context["examtimes"] = examtimes
-        context["form"] = ExamtimeAddForm()
+        # examtimes = subject.examtime_set.all()
+        # context["examtimes"] = examtimes
+        # context["form"] = ExamtimeAddForm()
         return context
         # quiz = self.get_object()
         # taken_quizzes = quiz.taken_quizzes.select_related('student__user').order_by('-date')
@@ -71,6 +71,25 @@ class SubjectDetailView(DetailView):
     def get_queryset(self):
         return self.request.user.teacher.subjects.all()
 
+
+@method_decorator([login_required, teacher_required], name='dispatch')
+class ExamtimeListView(ListView):
+    model = Examtime
+    # ordering = ('name', )
+    # context_object_name = 'quizzes'
+    template_name = 'classroom/teachers/examtime_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["subject"] = self.request.user.teacher.subjects.get(pk=self.kwargs['pk'])
+        context["form"] = ExamtimeAddForm()
+        return context
+
+    def get_queryset(self):
+        queryset = self.request.user.teacher.subjects.get(pk=self.kwargs['pk']).examtime_set.all()
+        return queryset
+
+
 @login_required
 @teacher_required
 def add_examtime(request, pk):
@@ -86,11 +105,11 @@ def add_examtime(request, pk):
             examtime = form.save(commit=False)
             examtime.subject = subject
             examtime.save()
-            return redirect('teachers:subject_detail', subject.pk)
+            return redirect('teachers:examtime_list', subject.pk)
     else:
         form = ExamtimeAddForm()
 
-    return redirect('teachers:subject_detail', subject.pk)
+    return redirect('teachers:examtime_list', subject.pk)
     # return render(request, 'classroom/teachers/question_add_form.html', {'quiz': quiz, 'form': form})
 
 
@@ -106,9 +125,9 @@ def delete_examtime(request, pk):
     if request.method == 'POST':
         examtime_pk = request.POST["btnDelete"]
         subject.examtime_set.get(pk=examtime_pk).delete()
-        return redirect('teachers:subject_detail', subject.pk)
+        return redirect('teachers:examtime_list', subject.pk)
 
-    return redirect('teachers:subject_detail', subject.pk)
+    return redirect('teachers:examtime_list', subject.pk)
     # return render(request, 'classroom/teachers/question_add_form.html', {'quiz': quiz, 'form': form})
 
 
@@ -121,7 +140,7 @@ class ExamListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["subject"] = self.request.user.teacher.subjects.get(pk=self.kwargs['subject_pk'])
+        context["subject"] = get_object_or_404(Subject, pk=self.kwargs['subject_pk'])
         return context
 
     def get_queryset(self):

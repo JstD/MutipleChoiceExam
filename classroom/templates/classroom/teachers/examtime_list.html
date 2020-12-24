@@ -4,13 +4,13 @@
 
 {% block content %}
 <div class="container-fulid">
-    <h1>Exam List</h1>
+    <h1>Examtime List</h1>
 
     <div class="text-center my-4">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">Add Exam</button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">Add Examtime</button>
     </div>
     
-    <!-- Modal
+    <!-- Modal -->
     <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -32,23 +32,25 @@
                 </div>
             </div>
         </div>
-    </div> -->
+    </div>
 
     <div>
         <table class="table table-striped">
             <thead>
               <tr>
-                <th scope="col">Code</th>
+                <th scope="col">Date</th>
+                <th scope="col">Semester</th>
                 <th scope="col">Action</th>
               </tr>
             </thead>
             <tbody>
-                <form action="" method="post">
+                <form action="{% url 'teachers:delete_examtime' subject.pk %}" method="post">
                     {% csrf_token %}
-                    {% for exam in exam_list %}
+                    {% for examtime in examtime_list %}
                     <tr>
-                        <td class="col-12"><a href="">{{exam.code}}</a></td>
-                        <td><button name="btnDelete" value="" class="btn btn-primary" type="submit" style="background-color: red;">Delete</button></td>
+                        <td class="col-2"><a href="{% url 'teachers:exam_list' subject.pk examtime.pk %}">{{examtime.date}}</a></td>
+                        <td class="col-10">{{ examtime.semester }}</td>
+                        <td><button name="btnDelete" value="{{ examtime.pk }}" class="btn btn-primary" type="submit" style="background-color: red;">Delete</button></td>
                     </tr>
                     {% endfor %} 
                 </form>         
