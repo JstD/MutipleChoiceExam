@@ -97,6 +97,24 @@ def add_examtime(request, pk):
     # return render(request, 'classroom/teachers/question_add_form.html', {'quiz': quiz, 'form': form})
 
 
+@login_required
+@teacher_required
+def delete_examtime(request, pk):
+    # By filtering the quiz by the url keyword argument `pk` and
+    # by the owner, which is the logged in user, we are protecting
+    # this view at the object-level. Meaning only the owner of
+    # quiz will be able to add questions to it.
+    subject = get_object_or_404(Subject, pk=pk)
+
+    if request.method == 'POST':
+        examtime_pk = request.POST["btnDelete"]
+        subject.examtime_set.get(pk=examtime_pk).delete()
+        return redirect('teachers:subject_detail', subject.pk)
+
+    return redirect('teachers:subject_detail', subject.pk)
+    # return render(request, 'classroom/teachers/question_add_form.html', {'quiz': quiz, 'form': form})
+
+
 # @method_decorator([login_required, teacher_required], name='dispatch')
 # class QuizListView(ListView):
 #     model = Quiz

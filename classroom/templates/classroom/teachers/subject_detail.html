@@ -36,12 +36,27 @@
     </div>
 
     <div>
-        {% for examtime in examtimes %}
-        <div class="row">
-            <div class="col-2">ExamTime:</div>
-            <div class="col-10"><a href="">Date: {{examtime.date}} - Semester: {{examtime.semester}}</a></div>
-        </div>
-        {% endfor %}
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Semester</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+                <form action="{% url 'teachers:delete_examtime' subject.pk %}" method="post">
+                    {% csrf_token %}
+                    {% for examtime in examtimes %}
+                    <tr>
+                        <td class="col-2"><a href="">{{examtime.date}}</a></td>
+                        <td class="col-10">{{ examtime.semester }}</td>
+                        <td><button name="btnDelete" value="{{ examtime.pk }}" class="btn btn-primary" type="submit" style="background-color: red;">Delete</button></td>
+                    </tr>
+                    {% endfor %} 
+                </form>         
+            </tbody>
+          </table>
     </div>
 
 </div>
