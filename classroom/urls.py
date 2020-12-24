@@ -15,6 +15,7 @@ urlpatterns = [
     path('teachers/', include(([
         path('', teachers.SubjectListView.as_view(), name='subject_list'),
         path('subject/<pk>/', teachers.SubjectDetailView.as_view(), name='subject_detail'),
+         path('subject/<pk>/addexamtime', teachers.add_examtime, name='add_examtime'),
         # path('quiz/add/', teachers.QuizCreateView.as_view(), name='quiz_add'),
         # path('quiz/<int:pk>/', teachers.QuizUpdateView.as_view(), name='quiz_change'),
         # path('quiz/<int:pk>/delete/', teachers.QuizDeleteView.as_view(), name='quiz_delete'),

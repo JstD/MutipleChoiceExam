@@ -57,6 +57,7 @@ class SubjectDetailView(DetailView):
         subject = self.get_object()
         examtimes = subject.examtime_set.all()
         context["examtimes"] = examtimes
+        context["form"] = ExamtimeAddForm()
         return context
         # quiz = self.get_object()
         # taken_quizzes = quiz.taken_quizzes.select_related('student__user').order_by('-date')
@@ -72,6 +73,28 @@ class SubjectDetailView(DetailView):
 
     def get_queryset(self):
         return self.request.user.teacher.subjects.all()
+
+@login_required
+@teacher_required
+def add_examtime(request, pk):
+    # By filtering the quiz by the url keyword argument `pk` and
+    # by the owner, which is the logged in user, we are protecting
+    # this view at the object-level. Meaning only the owner of
+    # quiz will be able to add questions to it.
+    subject = get_object_or_404(Subject, pk=pk)
+
+    if request.method == 'POST':
+        form = ExamtimeAddForm(request.POST)
+        if form.is_valid():
+            examtime = form.save(commit=False)
+            examtime.subject = subject
+            examtime.save()
+            return redirect('teachers:subject_detail', subject.pk)
+    else:
+        form = ExamtimeAddForm()
+
+    return redirect('teachers:subject_detail', subject.pk)
+    # return render(request, 'classroom/teachers/question_add_form.html', {'quiz': quiz, 'form': form})
 
 
 # @method_decorator([login_required, teacher_required], name='dispatch')

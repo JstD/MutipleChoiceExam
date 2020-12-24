@@ -45,6 +45,11 @@ class StudentSignUpForm(UserCreationForm):
         # student.interests.add(*self.cleaned_data.get('interests'))
         return user
 
+class ExamtimeAddForm(forms.ModelForm):
+    class Meta:
+        model = Examtime
+        fields = ['date', 'semester']
+
 
 # class StudentInterestsForm(forms.ModelForm):
 #     class Meta:
