@@ -27,8 +27,8 @@ class TeacherSignUpView(CreateView):
     def form_valid(self, form):
         user = form.save()
         login(self.request, user)
-        # return redirect('teachers:quiz_change_list')
-        return HttpResponse("Hello" + user.username)
+        return redirect('teachers:subject_list')
+
 
 @method_decorator([login_required, teacher_required], name='dispatch')
 class SubjectListView(ListView):
@@ -37,12 +37,9 @@ class SubjectListView(ListView):
     # context_object_name = 'quizzes'
     template_name = 'classroom/teachers/subject_list.html'
 
-    # def get_queryset(self):
-    #     queryset = self.request.user.quizzes \
-    #         .select_related('subject') \
-    #         .annotate(questions_count=Count('questions', distinct=True)) \
-    #         .annotate(taken_count=Count('taken_quizzes', distinct=True))
-    #     return queryset
+    def get_queryset(self):
+        queryset = self.request.user.teacher.subjects.all()
+        return queryset
 
 
 @method_decorator([login_required, teacher_required], name='dispatch')
@@ -113,6 +110,23 @@ def delete_examtime(request, pk):
 
     return redirect('teachers:subject_detail', subject.pk)
     # return render(request, 'classroom/teachers/question_add_form.html', {'quiz': quiz, 'form': form})
+
+
+@method_decorator([login_required, teacher_required], name='dispatch')
+class ExamListView(ListView):
+    model = Exam
+    # ordering = ('name', )
+    # context_object_name = 'quizzes'
+    template_name = 'classroom/teachers/exam_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["subject"] = self.request.user.teacher.subjects.get(pk=self.kwargs['subject_pk'])
+        return context
+
+    def get_queryset(self):
+        queryset = self.request.user.teacher.subjects.get(pk=self.kwargs['subject_pk']).examtime_set.get(pk=self.kwargs['examtime_pk']).exam_set.all()
+        return queryset
 
 
 # @method_decorator([login_required, teacher_required], name='dispatch')

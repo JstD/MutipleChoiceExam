@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <h1>Exam List</h1>
+    <div> 
+        <!-- Iterate over object_list -->
+        {% for exam in exam_list %} 
+        <!-- Display Objects -->
+        <div><a href="">{{ exam.code }}</a></div> 
+    
+        <hr/> 
+        <!-- If objet_list is empty  -->
+        {% empty %} 
+        <div>No objects yet.</div> 
+        {% endfor %} 
+    </div>
+{% endblock %}
