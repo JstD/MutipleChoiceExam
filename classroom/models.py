@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.html import escape, mark_safe
 from django.core.mail import send_mail
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 
 
 class Subject(models.Model):
@@ -72,7 +74,7 @@ class Question(models.Model):
     modify_date = models.DateField(blank=True, null=True)
     outcome = models.ForeignKey(Outcome, on_delete=models.CASCADE)
     content = models.OneToOneField(Content, on_delete=models.CASCADE)
-    commondescriptions = models.ManyToManyField('Commondescription')
+    commondescriptions = models.ManyToManyField('Commondescription', blank=True)
 
     class Meta:
         # managed = False
@@ -159,8 +161,9 @@ class Student(models.Model):
 class Answerpart(models.Model):
     question = models.ForeignKey('Question', on_delete=models.CASCADE)
     answerid = models.PositiveIntegerField()
-    RESULT_CHOICE = [('T', 'True'), ('F', 'False')]
-    result = models.CharField(max_length=1, choices=RESULT_CHOICE, blank=True, null=True)
+    # RESULT_CHOICE = [('T', 'True'), ('F', 'False')]
+    # result = models.CharField(max_length=1, choices=RESULT_CHOICE, blank=True, null=True)
+    result = models.BooleanField(default=False)
     content = models.OneToOneField('Content', on_delete=models.CASCADE)
 
     class Meta:
@@ -168,3 +171,11 @@ class Answerpart(models.Model):
         db_table = 'AnswerPart'
         unique_together = (('question', 'answerid'),)
 
+
+@receiver(post_delete, sender=Question)
+def auto_delete_content_with_question(sender, instance, **kwargs):
+    instance.content.delete()
+
+@receiver(post_delete, sender=Answerpart)
+def auto_delete_contentwith_answerpart(sender, instance, **kwargs):
+    instance.content.delete()

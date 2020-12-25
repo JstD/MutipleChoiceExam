@@ -57,7 +57,7 @@
                     {% csrf_token %}
                     {% for outcome in outcome_list %}
                     <tr>
-                        <td class=""><a href="">{{outcome.outcome}}</a></td>
+                        <td class=""><a href="{% url 'teachers:question_list' outcome.pk %}">{{outcome.outcome}}</a></td>
                         <td class="">{{outcome.content}}</td>
                         <td class="">{{outcome.superoutcome}}</td>
                         <td><button name="btnDelete" value="{{outcome.pk}}" class="btn btn-primary" type="submit" style="background-color: red;">Delete</button></td>
