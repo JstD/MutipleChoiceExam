@@ -55,6 +55,10 @@ class ExamAddForm(forms.ModelForm):
         model = Exam
         fields = ['code']
 
+class OutcomeAddForm(forms.ModelForm):
+    class Meta:
+        model = Outcome
+        fields = ['outcome', 'content', 'superoutcome']
 
 # class StudentInterestsForm(forms.ModelForm):
 #     class Meta:
