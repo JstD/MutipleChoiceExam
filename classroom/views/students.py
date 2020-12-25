@@ -29,6 +29,21 @@ class StudentSignUpView(CreateView):
         # return redirect('students:quiz_list')
         return HttpResponse("Hello " + str(user.username))
 
+@method_decorator([login_required, student_required], name='dispatch')
+class StudentSubjectView(ListView):
+    model = Subject
+
+    template_name = 'classroom/students/student_subject_list.html'
+
+    def get_queryset(self):
+        queryset = Subject.objects.all()
+        return queryset
+
+class StudentExamGet(ListView):
+    model = Examtime
+    exam_semester = Examtime.semester
+
+
 
 # @method_decorator([login_required, student_required], name='dispatch')
 # class StudentInterestsView(UpdateView):

@@ -194,6 +194,43 @@ def delete_exam(request, pk):
     # return render(request, 'classroom/teachers/question_add_form.html', {'quiz': quiz, 'form': form})
 
 
+@method_decorator([login_required, teacher_required], name='dispatch')
+class AddQuestionView(ListView):
+    model = Question
+    ordering = ('modify_date', )
+    context_object_name = 'Questions'
+
+    def get_queryset(self):
+        queryset = Question.objects.all()
+        return queryset
+
+    def form_valid(self, form):
+        question = form['question'].save(commit=False)
+        answer1 = form['answer1'].save(commit=False)
+        answer2 = form['answer2'].save(commit=False)
+        answer3 = form['answer3'].save(commit=False)
+        answer4 = form['answer4'].save(commit=False)
+        #answer5 = form['answer5'].save(commit=False)
+        question.teacher = self.request.user
+        question.modify_date = date.today()
+        answer1.question = question
+        answer2.question = question
+        answer3.question = question
+        answer4.question = question
+        #answer5.question = question
+        question.save()
+        answer1.save()
+        answer2.save()
+        answer3.save()
+        answer4.save()
+        #answer1.save()
+        messages.success(self.request, "The question was added successfully!")
+        return redirect('teacher:subject_detail', question.pk)
+
+
+
+
+
 # @login_required
 # @teacher_required
 # def delete_examtime(request, pk):

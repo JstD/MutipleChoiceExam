@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
 from django.forms.utils import ValidationError
+from betterforms.multiform import MultiModelForm
 
 from classroom.models import *
 
@@ -55,6 +56,30 @@ class ExamAddForm(forms.ModelForm):
         model = Exam
         fields = ['code']
 
+class OneQuestionAddForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = ['content', 'commondescriptions']
+
+
+class DescriptionAddForm(forms.ModelForm):
+    class Meta:
+        model = Commondescription
+
+class AnswerPartAddForm(forms.ModelForm):
+    class Meta:
+        model = Answerpart
+        fields = ['result', 'content']
+
+class QuestionAddForm(MultiModelForm):
+    form_classes = {
+        'question': OneQuestionAddForm,
+        'answer1': AnswerPartAddForm,
+        'answer2': AnswerPartAddForm,
+        'answer3': AnswerPartAddForm,
+        'answer4': AnswerPartAddForm,
+        'answer5': AnswerPartAddForm,
+    }
 
 # class StudentInterestsForm(forms.ModelForm):
 #     class Meta:

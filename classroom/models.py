@@ -68,7 +68,7 @@ class Commondescription(models.Model):
         db_table = 'CommonDescription'
 
 class Question(models.Model):
-    teacher= models.ForeignKey('Teacher', on_delete=models.CASCADE)
+    teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE)
     modify_date = models.DateField(blank=True, null=True)
     outcome = models.ForeignKey(Outcome, on_delete=models.CASCADE)
     content = models.OneToOneField(Content, on_delete=models.CASCADE)
