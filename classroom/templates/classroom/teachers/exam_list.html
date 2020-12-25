@@ -2,9 +2,14 @@
 
 {% load crispy_forms_tags %}
 
+{% block title %}
+    {{examtime.subject.name}}
+{% endblock %}
+
 {% block content %}
 <div class="container-fulid">
     <h1>Exam List</h1>
+    <h5>Date: {{examtime.date}} - Semester: {{examtime.semester}}</h5>
 
     <div class="text-center my-4">
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">Add Exam</button>
