@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {{outcome.subject.name}}
+{% endblock %}
+
+{% block titlelink %}
+    {% url 'teachers:subject_detail' outcome.subject.pk %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fulid">
+    <h1>Question List</h1>
+
+    <div class="text-center my-4">
+        <a href="{% url 'teachers:create_question_form' outcome.pk %}" class="btn btn-primary text-white">Add Question</a>
+    </div>
+    
+
+    <div>
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Question</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+                <form action="{% url 'teachers:delete_question' outcome.pk %}" method="post">
+                    {% csrf_token %}
+                    {% for question in question_list %}
+                    <tr>
+                        <td class="col-12"><a href="">{{question.pk}}</a></td>
+                        <td><button name="btnDelete" value="{{question.pk}}" class="btn btn-primary" type="submit" style="background-color: red;">Delete</button></td>
+                    </tr>
+                    {% endfor %} 
+                </form>         
+            </tbody>
+          </table>
+    </div>
+
+</div>
+{% endblock %}

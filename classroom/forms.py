@@ -56,36 +56,23 @@ class ExamAddForm(forms.ModelForm):
         model = Exam
         fields = ['code']
 
-<<<<<<< HEAD
-class OneQuestionAddForm(forms.ModelForm):
-    class Meta:
-        model = Question
-        fields = ['content', 'commondescriptions']
 
-
-class DescriptionAddForm(forms.ModelForm):
-    class Meta:
-        model = Commondescription
-
-class AnswerPartAddForm(forms.ModelForm):
-    class Meta:
-        model = Answerpart
-        fields = ['result', 'content']
-
-class QuestionAddForm(MultiModelForm):
-    form_classes = {
-        'question': OneQuestionAddForm,
-        'answer1': AnswerPartAddForm,
-        'answer2': AnswerPartAddForm,
-        'answer3': AnswerPartAddForm,
-        'answer4': AnswerPartAddForm,
-        'answer5': AnswerPartAddForm,
-    }
 
 class OutcomeAddForm(forms.ModelForm):
     class Meta:
         model = Outcome
         fields = ['outcome', 'content', 'superoutcome']
+
+class QuestionCreateForm(forms.Form):
+    question_text = forms.CharField(max_length=1000, label="Question")
+    answer_text_1 = forms.CharField(max_length=1000, label="Answer 1")
+    answer_result_1 = forms.BooleanField(required=False, label="Correct ?")
+    answer_text_2 = forms.CharField(max_length=1000, label="Answer 2")
+    answer_result_2 = forms.BooleanField(required=False, label="Correct ?")
+    answer_text_3 = forms.CharField(max_length=1000, label="Answer 3")
+    answer_result_3 = forms.BooleanField(required=False, label="Correct ?")
+    answer_text_4 = forms.CharField(max_length=1000, label="Answer 4")
+    answer_result_4 = forms.BooleanField(required=False, label="Correct ?")
 
 
 # class StudentInterestsForm(forms.ModelForm):

@@ -318,6 +318,73 @@ def delete_outcome(request, pk):
     return redirect('teachers:outcome_list', subject.pk)
 
 
+@method_decorator([login_required, teacher_required], name='dispatch')
+class QuestionListView(ListView):
+    model = Question
+    # ordering = ('name', )
+    # context_object_name = 'quizzes'
+    template_name = 'classroom/teachers/question_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["outcome"] = get_object_or_404(Outcome, pk=self.kwargs['pk'])
+        # context["form"] = QuestionCreateForm()
+        return context
+
+    def get_queryset(self):
+        queryset = Outcome.objects.get(pk=self.kwargs['pk']).question_set.all()
+        return queryset
+
+@login_required
+@teacher_required
+def create_question_form(request, pk):
+    outcome = get_object_or_404(Outcome, pk=pk)
+    form = QuestionCreateForm()
+    return render(request, 'classroom/teachers/question_create_form.html', {'outcome':outcome, 'form':form})
+
+@login_required
+@teacher_required
+def create_question(request, pk):
+    outcome = get_object_or_404(Outcome, pk=pk)
+
+    if request.method == 'POST':
+        form = QuestionCreateForm(request.POST)
+        if form.is_valid():
+            # Create content
+            question_content = Content.objects.create(text=form.cleaned_data['question_text'])
+            answer_content_1 = Content.objects.create(text=form.cleaned_data['answer_text_1'])
+            answer_content_2 = Content.objects.create(text=form.cleaned_data['answer_text_2'])
+            answer_content_3 = Content.objects.create(text=form.cleaned_data['answer_text_3'])
+            answer_content_4 = Content.objects.create(text=form.cleaned_data['answer_text_4'])
+            # question = form.save(commit=False)
+            # Create quesion
+            teacher = request.user.teacher
+            modify_date = datetime.now().strftime('%Y-%m-%d')
+            question = Question.objects.create(teacher=teacher, modify_date=modify_date, outcome=outcome, content=question_content)
+            # Create answerpart
+            Answerpart.objects.create(question=question, answerid=1, result=form.cleaned_data['answer_result_1'], content=answer_content_1)
+            Answerpart.objects.create(question=question, answerid=2, result=form.cleaned_data['answer_result_2'], content=answer_content_2)
+            Answerpart.objects.create(question=question, answerid=3, result=form.cleaned_data['answer_result_3'], content=answer_content_3)
+            Answerpart.objects.create(question=question, answerid=4, result=form.cleaned_data['answer_result_4'], content=answer_content_4)
+            return redirect('teachers:question_list', outcome.pk)
+    else:
+        form = QuestionCreateForm()
+
+    return redirect('teachers:question_list', outcome.pk)
+
+
+@login_required
+@teacher_required
+def delete_question(request, pk):
+    outcome = get_object_or_404(Outcome, pk=pk)
+
+    if request.method == 'POST':
+        question_pk = request.POST["btnDelete"]
+        Question.objects.get(pk=question_pk).delete()
+        return redirect('teachers:question_list', outcome.pk)
+
+    return redirect('teachers:question_list', outcome.pk)
+
 # @login_required
 # @teacher_required
 # def delete_examtime(request, pk):
