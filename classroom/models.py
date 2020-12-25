@@ -20,10 +20,10 @@ class Content(models.Model):
         db_table = 'Content'
 
 class Outcome(models.Model):
-    subject = models.OneToOneField('Subject', on_delete=models.CASCADE)
-    outcome = models.PositiveIntegerField()
+    subject = models.ForeignKey('Subject', on_delete=models.CASCADE)
+    outcome = models.CharField(max_length=10)
     content = models.CharField(max_length=500, blank=True, null=True)
-    superoutcome = models.ForeignKey('self', on_delete=models.CASCADE, related_name='superoutcome_set')
+    superoutcome = models.ForeignKey('self', on_delete=models.CASCADE, related_name='superoutcome_set', blank=True, null=True)
 
     class Meta:
         # managed = False

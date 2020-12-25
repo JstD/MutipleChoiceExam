@@ -56,6 +56,7 @@ class ExamAddForm(forms.ModelForm):
         model = Exam
         fields = ['code']
 
+<<<<<<< HEAD
 class OneQuestionAddForm(forms.ModelForm):
     class Meta:
         model = Question
@@ -80,6 +81,12 @@ class QuestionAddForm(MultiModelForm):
         'answer4': AnswerPartAddForm,
         'answer5': AnswerPartAddForm,
     }
+
+class OutcomeAddForm(forms.ModelForm):
+    class Meta:
+        model = Outcome
+        fields = ['outcome', 'content', 'superoutcome']
+
 
 # class StudentInterestsForm(forms.ModelForm):
 #     class Meta:

@@ -269,6 +269,53 @@ def check_exam(request, pk):
 
     return redirect('teachers:exam_detail', exam.pk)
 
+@method_decorator([login_required, teacher_required], name='dispatch')
+class OutcomeListView(ListView):
+    model = Outcome
+    # ordering = ('name', )
+    # context_object_name = 'quizzes'
+    template_name = 'classroom/teachers/outcome_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["subject"] = get_object_or_404(Subject, pk=self.kwargs['pk'])
+        context["form"] = OutcomeAddForm()
+        return context
+
+    def get_queryset(self):
+        queryset = Subject.objects.get(pk=self.kwargs['pk']).outcome_set.all()
+        return queryset
+
+
+@login_required
+@teacher_required
+def add_outcome(request, pk):
+    subject = get_object_or_404(Subject, pk=pk)
+
+    if request.method == 'POST':
+        form = OutcomeAddForm(request.POST)
+        if form.is_valid():
+            outcome = form.save(commit=False)
+            outcome.subject = subject
+            outcome.save()
+            return redirect('teachers:outcome_list', subject.pk)
+    else:
+        form = OutcomeAddForm()
+
+    return redirect('teachers:outcome_list', subject.pk)
+
+
+@login_required
+@teacher_required
+def delete_outcome(request, pk):
+    subject = get_object_or_404(Subject, pk=pk)
+
+    if request.method == 'POST':
+        outcome_pk = request.POST["btnDelete"]
+        subject.outcome_set.get(pk=outcome_pk).delete()
+        return redirect('teachers:outcome_list', subject.pk)
+
+    return redirect('teachers:outcome_list', subject.pk)
 
 
 # @login_required
