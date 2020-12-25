@@ -2,9 +2,18 @@
 
 {% load crispy_forms_tags %}
 
+{% block title %}
+    {{examtime.subject.name}}
+{% endblock %}
+
+{% block titlelink %}
+    {% url 'teachers:subject_detail' examtime.subject.pk %}
+{% endblock %}
+
 {% block content %}
 <div class="container-fulid">
     <h1>Exam List</h1>
+    <h5><a href="{% url 'teachers:examtime_list' examtime.subject.pk %}">Date: {{examtime.date}} - Semester: {{examtime.semester}}</a></h5>
 
     <div class="text-center my-4">
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">Add Exam</button>
@@ -47,7 +56,7 @@
                     {% csrf_token %}
                     {% for exam in exam_list %}
                     <tr>
-                        <td class="col-12"><a href="">{{exam.code}}</a></td>
+                        <td class="col-12"><a href="{% url 'teachers:exam_detail' exam.pk %}">{{exam.code}}</a></td>
                         <td><button name="btnDelete" value="{{exam.pk}}" class="btn btn-primary" type="submit" style="background-color: red;">Delete</button></td>
                     </tr>
                     {% endfor %} 
