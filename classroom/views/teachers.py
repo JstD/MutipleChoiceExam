@@ -322,7 +322,7 @@ def delete_outcome(request, pk):
 class QuestionListView(ListView):
     model = Question
     # ordering = ('name', )
-    # context_object_name = 'quizzes'
+    context_object_name = 'questions'
     template_name = 'classroom/teachers/question_list.html'
 
     def get_context_data(self, **kwargs):
@@ -332,8 +332,12 @@ class QuestionListView(ListView):
         return context
 
     def get_queryset(self):
-        queryset = Outcome.objects.get(pk=self.kwargs['pk']).question_set.all()
+        #queryset = Outcome.objects.get(pk=self.kwargs['pk']).question_set.all()
+        ques_set = Outcome.objects.get(pk=self.kwargs['pk']).question_set.all()
+        ans_set = Answerpart.objects.all()
+        queryset = {'ques_set': ques_set, 'ans_set': ans_set}
         return queryset
+        #return queryset
 
 @login_required
 @teacher_required
@@ -384,6 +388,8 @@ def delete_question(request, pk):
         return redirect('teachers:question_list', outcome.pk)
 
     return redirect('teachers:question_list', outcome.pk)
+
+
 
 # @login_required
 # @teacher_required

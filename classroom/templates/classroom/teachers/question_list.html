@@ -23,16 +23,28 @@
         <table class="table table-striped">
             <thead>
               <tr>
-                <th scope="col">Question</th>
+                <th scope="col-2">Question</th>
+                <th scope="col-8">Content</th>
+                  <th scope="col-2">Answers</th>
+                  <th scope="col-2"></th>
+                  <th scope="col-2"></th>
+                  <th scope="col-2"></th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
                 <form action="{% url 'teachers:delete_question' outcome.pk %}" method="post">
                     {% csrf_token %}
-                    {% for question in question_list %}
+                    {% for question in questions.ques_set %}
                     <tr>
-                        <td class="col-12"><a href="">{{question.pk}}</a></td>
+                        <td class=""><a href="">{{question.pk}}</a></td>
+                        <td class="">{{question.content.text}}</td>
+
+                        {% for answer in questions.ans_set %}
+                            {% if answer.question == question %}
+                                <td class="">{{answer.content.text}}</td>
+                            {% endif %}
+                        {% endfor %}
                         <td><button name="btnDelete" value="{{question.pk}}" class="btn btn-primary" type="submit" style="background-color: red;">Delete</button></td>
                     </tr>
                     {% endfor %} 
