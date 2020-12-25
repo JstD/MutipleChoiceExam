@@ -194,6 +194,48 @@ def delete_exam(request, pk):
     # return render(request, 'classroom/teachers/question_add_form.html', {'quiz': quiz, 'form': form})
 
 
+@method_decorator([login_required, teacher_required], name='dispatch')
+class ExamDetailView(DetailView):
+    model = Exam
+    # context_object_name = 'quiz'
+    # template_name = 'classroom/teachers/quiz_results.html'
+    template_name = 'classroom/teachers/exam_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        exam = self.get_object()
+        return context
+
+    def get_queryset(self):
+        return Exam.objects.all()
+
+
+@login_required
+@teacher_required
+def confirm_exam(request, pk):
+    exam = get_object_or_404(Exam, pk=pk)
+
+    if request.method == 'POST':
+        exam.confirm_date = datetime.now().strftime('%Y-%m-%d')
+        exam.save()
+        return redirect('teachers:exam_detail', exam.pk)
+
+    return redirect('teachers:exam_detail', exam.pk)
+
+
+@login_required
+@teacher_required
+def check_exam(request, pk):
+    exam = get_object_or_404(Exam, pk=pk)
+
+    if request.method == 'POST':
+        exam.check_date = datetime.now().strftime('%Y-%m-%d')
+        exam.save()
+        return redirect('teachers:exam_detail', exam.pk)
+
+    return redirect('teachers:exam_detail', exam.pk)
+
+
 # @login_required
 # @teacher_required
 # def delete_examtime(request, pk):
