@@ -48,7 +48,7 @@
                     {% csrf_token %}
                     {% for examtime in examtime_list %}
                     <tr>
-                        <td class="col-2"><a href="{% url 'teachers:exam_list' subject.pk examtime.pk %}">{{examtime.date}}</a></td>
+                        <td class="col-2"><a href="{% url 'teachers:exam_list' examtime.pk %}">{{examtime.date}}</a></td>
                         <td class="col-10">{{ examtime.semester }}</td>
                         <td><button name="btnDelete" value="{{ examtime.pk }}" class="btn btn-primary" type="submit" style="background-color: red;">Delete</button></td>
                     </tr>

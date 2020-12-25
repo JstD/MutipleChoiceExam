@@ -9,6 +9,7 @@ from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import *
 from django.http import *
+from datetime import *
 
 from ..decorators import teacher_required
 from ..forms import *
@@ -81,12 +82,12 @@ class ExamtimeListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["subject"] = self.request.user.teacher.subjects.get(pk=self.kwargs['pk'])
+        context["subject"] = Subject.objects.get(pk=self.kwargs['pk'])
         context["form"] = ExamtimeAddForm()
         return context
 
     def get_queryset(self):
-        queryset = self.request.user.teacher.subjects.get(pk=self.kwargs['pk']).examtime_set.all()
+        queryset = Subject.objects.get(pk=self.kwargs['pk']).examtime_set.all()
         return queryset
 
 
@@ -140,13 +141,75 @@ class ExamListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["subject"] = get_object_or_404(Subject, pk=self.kwargs['subject_pk'])
+        context["examtime"] = get_object_or_404(Examtime, pk=self.kwargs['pk'])
+        context["form"] = ExamAddForm()
         return context
 
     def get_queryset(self):
-        queryset = self.request.user.teacher.subjects.get(pk=self.kwargs['subject_pk']).examtime_set.get(pk=self.kwargs['examtime_pk']).exam_set.all()
+        queryset = Examtime.objects.get(pk=self.kwargs['pk']).exam_set.all()
         return queryset
 
+
+@login_required
+@teacher_required
+def add_exam(request, pk):
+    # By filtering the quiz by the url keyword argument `pk` and
+    # by the owner, which is the logged in user, we are protecting
+    # this view at the object-level. Meaning only the owner of
+    # quiz will be able to add questions to it.
+    examtime = get_object_or_404(Examtime, pk=pk)
+
+    if request.method == 'POST':
+        form = ExamAddForm(request.POST)
+        if form.is_valid():
+            exam = form.save(commit=False)
+            exam.examtime = examtime
+            exam.mainteacher = Teacher.objects.get(teach__role='Main', teach__subject=examtime.subject)
+            exam.manager = Teacher.objects.get(teach__role='Manager', teach__subject=examtime.subject)
+            exam.confirm_date = datetime.now().strftime('%Y-%m-%d')
+            exam.save()
+            return redirect('teachers:exam_list', examtime.pk)
+    else:
+        form = ExamtimeAddForm()
+
+    return redirect('teachers:examtime_list', examtime.pk)
+    # return render(request, 'classroom/teachers/question_add_form.html', {'quiz': quiz, 'form': form})
+
+
+@login_required
+@teacher_required
+def delete_exam(request, pk):
+    # By filtering the quiz by the url keyword argument `pk` and
+    # by the owner, which is the logged in user, we are protecting
+    # this view at the object-level. Meaning only the owner of
+    # quiz will be able to add questions to it.
+    examtime = get_object_or_404(Examtime, pk=pk)
+
+    if request.method == 'POST':
+        exam_pk = request.POST["btnDelete"]
+        examtime.exam_set.get(pk=exam_pk).delete()
+        return redirect('teachers:exam_list', examtime.pk)
+
+    return redirect('teachers:exam_list', examtime.pk)
+    # return render(request, 'classroom/teachers/question_add_form.html', {'quiz': quiz, 'form': form})
+
+
+# @login_required
+# @teacher_required
+# def delete_examtime(request, pk):
+#     # By filtering the quiz by the url keyword argument `pk` and
+#     # by the owner, which is the logged in user, we are protecting
+#     # this view at the object-level. Meaning only the owner of
+#     # quiz will be able to add questions to it.
+#     subject = get_object_or_404(Subject, pk=pk)
+
+#     if request.method == 'POST':
+#         examtime_pk = request.POST["btnDelete"]
+#         subject.examtime_set.get(pk=examtime_pk).delete()
+#         return redirect('teachers:examtime_list', subject.pk)
+
+#     return redirect('teachers:examtime_list', subject.pk)
+#     # return render(request, 'classroom/teachers/question_add_form.html', {'quiz': quiz, 'form': form})
 
 # @method_decorator([login_required, teacher_required], name='dispatch')
 # class QuizListView(ListView):

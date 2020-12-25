@@ -50,6 +50,11 @@ class ExamtimeAddForm(forms.ModelForm):
         model = Examtime
         fields = ['date', 'semester']
 
+class ExamAddForm(forms.ModelForm):
+    class Meta:
+        model = Exam
+        fields = ['code']
+
 
 # class StudentInterestsForm(forms.ModelForm):
 #     class Meta:
