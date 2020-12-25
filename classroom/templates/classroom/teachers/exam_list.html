@@ -6,10 +6,14 @@
     {{examtime.subject.name}}
 {% endblock %}
 
+{% block titlelink %}
+    {% url 'teachers:subject_detail' examtime.subject.pk %}
+{% endblock %}
+
 {% block content %}
 <div class="container-fulid">
     <h1>Exam List</h1>
-    <h5>Date: {{examtime.date}} - Semester: {{examtime.semester}}</h5>
+    <h5><a href="{% url 'teachers:examtime_list' examtime.subject.pk %}">Date: {{examtime.date}} - Semester: {{examtime.semester}}</a></h5>
 
     <div class="text-center my-4">
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">Add Exam</button>

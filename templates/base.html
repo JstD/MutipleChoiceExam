@@ -23,7 +23,7 @@
           <div class="row">
             <div class="col-6">
               <h1 class="logo">
-                <a href="{% url 'home' %}">
+                <a href="{% block titlelink %}{% url 'home' %}{% endblock %}">
                   {% block title %}Django School{% endblock %}
                   {% if user.is_authenticated %}
                     {% if user.is_teacher %}
