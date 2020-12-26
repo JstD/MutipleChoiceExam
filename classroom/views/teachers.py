@@ -366,10 +366,10 @@ def create_question(request, pk):
             modify_date = datetime.now().strftime('%Y-%m-%d')
             question = Question.objects.create(teacher=teacher, modify_date=modify_date, outcome=outcome, content=question_content)
             # Create answerpart
-            Answerpart.objects.create(question=question, answerid=1, result=form.cleaned_data['answer_result_1'], content=answer_content_1)
-            Answerpart.objects.create(question=question, answerid=2, result=form.cleaned_data['answer_result_2'], content=answer_content_2)
-            Answerpart.objects.create(question=question, answerid=3, result=form.cleaned_data['answer_result_3'], content=answer_content_3)
-            Answerpart.objects.create(question=question, answerid=4, result=form.cleaned_data['answer_result_4'], content=answer_content_4)
+            Answerpart.objects.create(question=question, answerid='A', result=form.cleaned_data['answer_result_1'], content=answer_content_1)
+            Answerpart.objects.create(question=question, answerid='B', result=form.cleaned_data['answer_result_2'], content=answer_content_2)
+            Answerpart.objects.create(question=question, answerid='C', result=form.cleaned_data['answer_result_3'], content=answer_content_3)
+            Answerpart.objects.create(question=question, answerid='D', result=form.cleaned_data['answer_result_4'], content=answer_content_4)
             return redirect('teachers:question_list', outcome.pk)
     else:
         form = QuestionCreateForm()
@@ -389,6 +389,25 @@ def delete_question(request, pk):
 
     return redirect('teachers:question_list', outcome.pk)
 
+
+@method_decorator([login_required, teacher_required], name='dispatch')
+class QuestionDetailView(DetailView):
+    model = Question
+    # context_object_name = 'quiz'
+    # template_name = 'classroom/teachers/quiz_results.html'
+    template_name = 'classroom/teachers/question_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        question = self.get_object()
+        context['answer_a'] = question.answerpart_set.get(answerid='A') 
+        context['answer_b'] = question.answerpart_set.get(answerid='B') 
+        context['answer_c'] = question.answerpart_set.get(answerid='C') 
+        context['answer_d'] = question.answerpart_set.get(answerid='D') 
+        return context
+
+    def get_queryset(self):
+        return Question.objects.all()
 
 
 # @login_required

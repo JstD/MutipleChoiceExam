@@ -160,7 +160,9 @@ class Student(models.Model):
 
 class Answerpart(models.Model):
     question = models.ForeignKey('Question', on_delete=models.CASCADE)
-    answerid = models.PositiveIntegerField()
+    ANSWER_ID_CHOICE = [('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D'), ('E', 'E')]
+    answerid = models.CharField(max_length=1, choices=ANSWER_ID_CHOICE)
+    # answerid = models.PositiveIntegerField()
     # RESULT_CHOICE = [('T', 'True'), ('F', 'False')]
     # result = models.CharField(max_length=1, choices=RESULT_CHOICE, blank=True, null=True)
     result = models.BooleanField(default=False)
