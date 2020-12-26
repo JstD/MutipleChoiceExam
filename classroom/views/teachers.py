@@ -409,6 +409,48 @@ class QuestionDetailView(DetailView):
     def get_queryset(self):
         return Question.objects.all()
 
+@method_decorator([login_required, teacher_required], name='dispatch')
+class QuestionBankView(ListView):
+    model = Question
+    # ordering = ('name', )
+    # context_object_name = 'questions'
+    template_name = 'classroom/teachers/question_bank.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["exam"] = get_object_or_404(Exam, pk=self.kwargs['pk'])
+        # context["form"] = QuestionCreateForm()
+        return context
+
+    def get_queryset(self):
+        #queryset = Outcome.objects.get(pk=self.kwargs['pk']).question_set.all()
+        exam = get_object_or_404(Exam, pk=self.kwargs['pk'])
+        # print(exam)
+        # queryset = Question.objects.filter(questionpresentation__exam=exam)
+        queryset = Question.objects.all()
+        # ans_set = Answerpart.objects.all()
+        # queryset = {'ques_set': ques_set, 'ans_set': ans_set}
+        return queryset
+
+@login_required
+@teacher_required
+def addQuestionToExam(request, pk):
+    exam = get_object_or_404(Exam, pk=pk)
+
+    if request.method == 'POST':
+        question_pk = request.POST['btnAdd']
+        question = Question.objects.get(pk=question_pk)
+        if Questionpresentation.objects.filter(exam=exam):
+            max_exam_number = Questionpresentation.objects.filter(exam=exam).latest('number').number
+        else:
+            max_exam_number = 0
+        new_presentation = Questionpresentation()
+        new_presentation.exam = exam
+        new_presentation.number = max_exam_number + 1
+        new_presentation.question = question
+        new_presentation.save()
+
+    return redirect('teachers:question_bank', exam.pk)
 
 # @login_required
 # @teacher_required
