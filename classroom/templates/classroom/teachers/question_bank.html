@@ -11,10 +11,16 @@
 {% endblock %}
 
 {% block content %}
-<div class="container-fulid">
-    <h1>Question Bank</h1>
-    <div>
-        <table class="table table-striped">
+<h1>Exam manager</h1>
+<nav>
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+    <a class="nav-item nav-link active" id="question-in-exam-tab" data-toggle="tab" href="#nav-question-in-exam" role="tab" aria-controls="nav-question-in-exam" aria-selected="true">Questions in exam</a>
+    <a class="nav-item nav-link" id="question-bank-tab" data-toggle="tab" href="#nav-question-bank" role="tab" aria-controls="nav-question-bank" aria-selected="false">Question bank</a>
+  </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+  <div class="tab-pane fade show active" id="nav-question-in-exam" role="tabpanel" aria-labelledby="question-in-exam-tab">
+      <table class="table table-striped">
             <thead>
               <tr>
                 <th scope="col-2">Question</th>
@@ -31,15 +37,13 @@
                         <td class="">{{question.content.text}}</td>
                         <td><button name="btnAdd" value="{{question.pk}}" class="btn btn-primary" type="submit" style="background-color: red;">Add to exam</button></td>
                     </tr>
-                    {% endfor %} 
-                </form>         
+                    {% endfor %}
+                </form>
             </tbody>
-          </table>
-    </div>
-
-    <h1>Question In Exam</h1>
-    <div>
-        <table class="table table-striped">
+      </table>
+  </div>
+  <div class="tab-pane fade" id="nav-question-bank" role="tabpanel" aria-labelledby="question-bank-tab">
+      <table class="table table-striped">
             <thead>
               <tr>
                 <th scope="col-2">Question</th>
@@ -59,8 +63,7 @@
                     {% endfor %}
                 </form>
             </tbody>
-          </table>
-    </div>
-
+      </table>
+  </div>
 </div>
 {% endblock %}
