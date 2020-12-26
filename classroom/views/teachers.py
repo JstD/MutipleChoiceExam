@@ -228,7 +228,7 @@ class AddQuestionView(ListView):
         return redirect('teacher:subject_detail', question.pk)
 
 
-
+@method_decorator([login_required, teacher_required], name='dispatch')
 class ExamDetailView(DetailView):
     model = Exam
     # context_object_name = 'quiz'
@@ -238,6 +238,12 @@ class ExamDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         exam = self.get_object()
+        subject = exam.examtime.subject
+        context["role"] = 'Normal'
+        if self.request.user.teacher.pk == Teacher.objects.get(teach__role='Manager', teach__subject=subject).pk:
+            context["role"] = 'Manager'
+        if self.request.user.teacher.pk == Teacher.objects.get(teach__role='Main', teach__subject=subject).pk:
+            context["role"] = 'Main'
         return context
 
     def get_queryset(self):
@@ -278,8 +284,13 @@ class OutcomeListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["subject"] = get_object_or_404(Subject, pk=self.kwargs['pk'])
+        subject = get_object_or_404(Subject, pk=self.kwargs['pk'])
+        context["subject"] = subject
         context["form"] = OutcomeAddForm()
+        if self.request.user.teacher.pk == Teacher.objects.get(teach__role='Manager', teach__subject=subject).pk:
+            context["is_manager"] = True
+        else:
+            context["is_manager"] = False
         return context
 
     def get_queryset(self):

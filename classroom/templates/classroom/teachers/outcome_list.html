@@ -14,9 +14,11 @@
 <div class="container-fulid">
     <h1>Outcome List</h1>
 
-    <div class="text-center my-4">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">Add Outcome</button>
-    </div>
+    {% if is_manager %}
+        <div class="text-center my-4">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">Add Outcome</button>
+        </div>
+    {% endif %}
     
     <!-- Modal -->
     <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">

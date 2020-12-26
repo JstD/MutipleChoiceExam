@@ -29,10 +29,12 @@
             <th scope="row">Confirm Date:</th>
             <td colspan="12">{{ exam.confirm_date }}</td>
             <td class="text-right">
+              {% if role == 'Main' %}
                 <form action="{% url 'teachers:confirm_exam' exam.pk %}" method="post">
                     {% csrf_token %}
                     <button class="btn btn-primary m-0" style="width: 5em;" type="submit">Confirm</button>
                 </form>
+              {% endif %}
             </td>
           </tr>
           <tr>
@@ -42,13 +44,15 @@
           </tr>
           <tr>
             <th scope="row">Check Date:</th>
-            <td colspan="12">{{ exam.check_date }}</td>
+            <td colspan="12">{{ exam.check_date }}</td>         
             <td class="text-right">
+              {% if role == 'Manager' %}
                 <form action="{% url 'teachers:check_exam' exam.pk %}" method="post">
                     {% csrf_token %}
                     <button class="btn btn-primary m-0" style="width: 5em;" type="submit">Check</button>
                 </form>
-            </td>
+              {% endif %}
+            </td>        
           </tr>
         </tbody>
     </table>
