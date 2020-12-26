@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {{question.outcome.subject.name}}
+{% endblock %}
+
+{% block titlelink %}
+    {% url 'teachers:subject_detail' question.outcome.subject.pk %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fulid">
+    <h1>{{ question.pk }}</h1>
+    <table class="table table-hover">
+        <tbody>
+          <tr>
+            <th scope="row">Teacher:</th>
+            <td colspan="12">{{question.teacher.user.username}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Modify Date:</th>
+            <td colspan="12">{{ question.modify_date }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Outcome:</th>
+            <td colspan="12"><a href="{% url 'teachers:question_list' question.outcome.pk %}">{{ question.outcome.outcome }}</a></td>
+          </tr>
+        </tbody>
+    </table>
+
+    <div style="font-size: 2em;">
+        <span class="font-weight-bold">Question: </span> {{question.content.text}}
+    </div>
+
+    <div class="row" style="font-size: 1.5em;">
+        <div class="col-10">
+            <span class="font-weight-bold">A. </span> {{answer_a.content.text}}
+        </div>
+        <div class="col-2 text-right">
+            <span class="font-weight-bold">{{answer_a.result}}</span>
+        </div>
+    </div>
+
+    <div class="row" style="font-size: 1.5em;">
+        <div class="col-10">
+            <span class="font-weight-bold">B. </span> {{answer_b.content.text}}
+        </div>
+        <div class="col-2 text-right">
+            <span class="font-weight-bold">{{answer_b.result}}</span>
+        </div>
+    </div>
+
+    <div class="row" style="font-size: 1.5em;">
+        <div class="col-10">
+            <span class="font-weight-bold">C. </span> {{answer_c.content.text}}
+        </div>
+        <div class="col-2 text-right">
+            <span class="font-weight-bold">{{answer_c.result}}</span>
+        </div>
+    </div>
+
+    <div class="row" style="font-size: 1.5em;">
+        <div class="col-10">
+            <span class="font-weight-bold">D. </span> {{answer_d.content.text}}
+        </div>
+        <div class="col-2 text-right">
+            <span class="font-weight-bold">{{answer_d.result}}</span>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <button type="button" class="btn btn-primary">Update</button>
+    </div>
+
+</div>
+{% endblock %}
