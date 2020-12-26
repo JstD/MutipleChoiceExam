@@ -403,11 +403,66 @@ class QuestionDetailView(DetailView):
         context['answer_a'] = question.answerpart_set.get(answerid='A') 
         context['answer_b'] = question.answerpart_set.get(answerid='B') 
         context['answer_c'] = question.answerpart_set.get(answerid='C') 
-        context['answer_d'] = question.answerpart_set.get(answerid='D') 
+        context['answer_d'] = question.answerpart_set.get(answerid='D')
+        context['form'] = QuestionUpdateForm(initial={
+            'question_text': question.content.text,
+            'answer_text_1': question.answerpart_set.get(answerid='A').content.text,
+            'answer_text_2': question.answerpart_set.get(answerid='B').content.text,
+            'answer_text_3': question.answerpart_set.get(answerid='C').content.text,
+            'answer_text_4': question.answerpart_set.get(answerid='D').content.text,
+            'answer_result_1': question.answerpart_set.get(answerid='A').result,
+            'answer_result_2': question.answerpart_set.get(answerid='B').result,
+            'answer_result_3': question.answerpart_set.get(answerid='C').result,
+            'answer_result_4': question.answerpart_set.get(answerid='D').result,
+        })
         return context
 
     def get_queryset(self):
         return Question.objects.all()
+
+
+@login_required
+@teacher_required
+def update_question(request, pk):
+    question = get_object_or_404(Question, pk=pk)
+
+    if request.method == 'POST':
+        form = QuestionCreateForm(request.POST)
+        if form.is_valid():
+            if request.user.teacher.pk == question.teacher.pk:
+                answer_a = question.answerpart_set.get(answerid='A')
+                answer_a.content.text = form.cleaned_data['answer_text_1']
+                answer_a.result = form.cleaned_data['answer_result_1']
+                answer_a.content.save()
+                answer_a.save()
+
+                answer_b = question.answerpart_set.get(answerid='B')
+                answer_b.content.text = form.cleaned_data['answer_text_2']
+                answer_b.result = form.cleaned_data['answer_result_2']
+                answer_b.content.save()
+                answer_b.save()
+
+                answer_c = question.answerpart_set.get(answerid='C')
+                answer_c.content.text = form.cleaned_data['answer_text_3']
+                answer_c.result = form.cleaned_data['answer_result_3']
+                answer_c.content.save()
+                answer_c.save()
+
+                answer_d = question.answerpart_set.get(answerid='D')
+                answer_d.content.text = form.cleaned_data['answer_text_4']
+                answer_d.result = form.cleaned_data['answer_result_4']
+                answer_d.content.save()
+                answer_d.save()
+
+                question.content.text = form.cleaned_data['question_text']
+                question.modify_date = datetime.now().strftime('%Y-%m-%d')
+                question.content.save()
+                question.save()
+            return redirect('teachers:question_detail', question.pk)
+    else:
+        form = QuestionCreateForm()
+
+    return redirect('teachers:question_detail', question.pk)
 
 
 # @login_required

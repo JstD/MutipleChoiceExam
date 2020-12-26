@@ -73,6 +73,17 @@ class QuestionCreateForm(forms.Form):
     answer_text_4 = forms.CharField(max_length=1000, label="D.")
     answer_result_4 = forms.BooleanField(required=False, label="Correct ?")
 
+class QuestionUpdateForm(forms.Form):
+    question_text = forms.CharField(max_length=1000, label="Question")
+    answer_text_1 = forms.CharField(max_length=1000, label="A.")
+    answer_result_1 = forms.BooleanField(required=False, label="Correct ?")
+    answer_text_2 = forms.CharField(max_length=1000, label="B.")
+    answer_result_2 = forms.BooleanField(required=False, label="Correct ?")
+    answer_text_3 = forms.CharField(max_length=1000, label="C.")
+    answer_result_3 = forms.BooleanField(required=False, label="Correct ?")
+    answer_text_4 = forms.CharField(max_length=1000, label="D.")
+    answer_result_4 = forms.BooleanField(required=False, label="Correct ?")
+
 
 # class StudentInterestsForm(forms.ModelForm):
 #     class Meta:

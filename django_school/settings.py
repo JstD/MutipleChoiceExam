@@ -89,14 +89,25 @@ WSGI_APPLICATION = 'django_school.wsgi.application'
 # }
 
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'multiple_choice_exam',
+#         'USER': 'root',
+#         'PASSWORD': '8pJ-:G&b}aPUP9*6',
+#         'HOST': 'localhost',
+#         'PORT': '3306',
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'multiple_choice_exam',
         'USER': 'root',
-        'PASSWORD': '8pJ-:G&b}aPUP9*6',
+        'PASSWORD': 'aBcDe@12345',
         'HOST': 'localhost',
-        'PORT': '3306',
+        'PORT': '5432',
     }
 }
 
