@@ -31,11 +31,10 @@
             <tbody>
                 <form action="{% url 'teachers:delete_question' outcome.pk %}" method="post">
                     {% csrf_token %}
-                    {% for question in questions %}
+                    {% for question in question_list %}
                     <tr>
-                        <td class=""><a href="">{{question.pk}}</a></td>
+                        <td class=""><a href="{% url 'teachers:question_detail' question.pk %}">{{question.pk}}</a></td>
                         <td class="">{{question.content.text}}</td>
-                        <td class="col-12"><a href="{% url 'teachers:question_detail' question.pk %}">{{question.pk}}</a></td>
                         <td><button name="btnDelete" value="{{question.pk}}" class="btn btn-primary" type="submit" style="background-color: red;">Delete</button></td>
                     </tr>
                     {% endfor %} 
