@@ -39,6 +39,7 @@ class StudentSubjectView(ListView):
         queryset = Subject.objects.all()
         return queryset
 
+@method_decorator([login_required, student_required], name='dispatch')
 class StudentExamGet(ListView):
     model = Examtime
     exam_semester = Examtime.semester
