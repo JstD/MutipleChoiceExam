@@ -30,7 +30,6 @@ class TeacherSignUpView(CreateView):
         login(self.request, user)
         return redirect('teachers:subject_list')
 
-
 @method_decorator([login_required, teacher_required], name='dispatch')
 class SubjectListView(ListView):
     model = Subject
@@ -435,7 +434,7 @@ class QuestionDetailView(DetailView):
 class QuestionBankView(ListView):
     model = Question
     # ordering = ('name', )
-    # context_object_name = 'questions'
+    context_object_name = 'questions'
     template_name = 'classroom/teachers/question_bank.html'
 
     def get_context_data(self, **kwargs):
@@ -449,7 +448,9 @@ class QuestionBankView(ListView):
         exam = get_object_or_404(Exam, pk=self.kwargs['pk'])
         # print(exam)
         # queryset = Question.objects.filter(questionpresentation__exam=exam)
-        queryset = Question.objects.all()
+        question_bank = Question.objects.all()
+        question_in_exam = Question.objects.filter(questionpresentation__exam=exam)
+        queryset = {'question_bank': question_bank, 'question_in_exam' : question_in_exam}
         # ans_set = Answerpart.objects.all()
         # queryset = {'ques_set': ques_set, 'ans_set': ans_set}
         return queryset
@@ -471,6 +472,18 @@ def addQuestionToExam(request, pk):
         new_presentation.number = max_exam_number + 1
         new_presentation.question = question
         new_presentation.save()
+
+    return redirect('teachers:question_bank', exam.pk)
+
+@login_required
+@teacher_required
+def deleteQuestionFromExam(request, pk):
+    exam = get_object_or_404(Exam, pk=pk)
+
+    if request.method == 'POST':
+        question_pk = request.POST['btnDelete']
+        question = Question.objects.get(pk=question_pk)
+        Questionpresentation.objects.filter(exam=exam, question=question).latest('number').delete()
 
     return redirect('teachers:question_bank', exam.pk)
 

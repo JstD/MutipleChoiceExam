@@ -4,10 +4,10 @@ from .views import classroom, students, teachers
 
 urlpatterns = [
     path('', classroom.home, name='home'),
-
     path('students/', include(([
-        path('', students.StudentSubjectView.as_view(), name='subject_list')
+        path('', students.StudentSubjectView.as_view(), name='subject_list'),
         # path('', students.QuizListView.as_view(), name='quiz_list'),
+        path('', students.QuizListView.as_view(), name='quiz_list'),
         # path('interests/', students.StudentInterestsView.as_view(), name='student_interests'),
         # path('taken/', students.TakenQuizListView.as_view(), name='taken_quiz_list'),
         # path('quiz/<int:pk>/', students.take_quiz, name='take_quiz'),
@@ -25,7 +25,7 @@ urlpatterns = [
         path('exam/<pk>/', teachers.ExamDetailView.as_view(), name='exam_detail'),
         path('exam/<pk>/questions', teachers.QuestionBankView.as_view(), name='question_bank'),
         path('exam/<pk>/questions/add', teachers.addQuestionToExam, name='add_question_to_exam'),
-        # path('exam/<pk>/questions/add/<qpk>', teachers.addQuestionToExam, name='add_question_to_exam'),
+        path('exam/<pk>/questions/delete', teachers.deleteQuestionFromExam, name='delete_question_from_exam'),
         path('exam/<pk>/confirm', teachers.confirm_exam, name='confirm_exam'),
         path('exam/<pk>/check', teachers.check_exam, name='check_exam'),
         path('subject/<pk>/outcomes', teachers.OutcomeListView.as_view(), name='outcome_list'),

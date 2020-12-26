@@ -11,6 +11,7 @@ class SignUpView(TemplateView):
 def home(request):
     if request.user.is_authenticated:
         if request.user.is_teacher:
+            print("Kk")
             return redirect(reverse('teachers:subject_list'))
             # return HttpResponse("Student " + request.user.username + "login succesfully")
         else:
