@@ -83,8 +83,12 @@ WSGI_APPLICATION = 'django_school.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'multiple_choice_exam',
+        'USER': 'jstD',
+        'PASSWORD': 'Dung_2000',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
