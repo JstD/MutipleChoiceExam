@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {{exam.examtime.subject.name}}
+{% endblock %}
+
+{% block titlelink %}
+    {% url 'teachers:subject_detail' exam.examtime.subject.pk %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fulid">
+    <h1>{{ exam.code }}</h1>
+    <table class="table table-hover">
+        <tbody>
+          <tr>
+            <th scope="row">Examtime:</th>
+            <td colspan="12"><a href="{% url 'teachers:exam_list' exam.examtime.pk %}">Date: {{exam.examtime.date}} - Semester: {{exam.examtime.semester}}</a></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th scope="row">Main Teacher:</th>
+            <td colspan="12">{{ exam.mainteacher.user.username }}</td>
+            <td></td>
+          </tr>
+          <tr>
+            <th scope="row">Confirm Date:</th>
+            <td colspan="12">{{ exam.confirm_date }}</td>
+            <td class="text-right">
+              {% if role == 'Main' %}
+                <form action="{% url 'teachers:confirm_exam' exam.pk %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-primary m-0" style="width: 5em;" type="submit">Confirm</button>
+                </form>
+              {% endif %}
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Manager:</th>
+            <td colspan="12">{{ exam.manager.user.username }}</td>
+            <td></td>
+          </tr>
+          <tr>
+            <th scope="row">Check Date:</th>
+            <td colspan="12">{{ exam.check_date }}</td>         
+            <td class="text-right">
+              {% if role == 'Manager' %}
+                <form action="{% url 'teachers:check_exam' exam.pk %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-primary m-0" style="width: 5em;" type="submit">Check</button>
+                </form>
+              {% endif %}
+            </td>        
+          </tr>
+        </tbody>
+    </table>
+
+    <div class="d-flex my-4">
+        <div class="mx-1"><a href="{% url 'teachers:question_bank' exam.pk %}">Questions</a></div>
+        <div class="mx-1 border-right border border-dark"></div>
+        <div class="mx-1"><a href="">Students</a></div>
+        <div class="mx-1 border-right border border-dark"></div>
+        <div class="mx-1"><a href="">Statistics</a></div>
+    </div>
+
+</div>
+{% endblock %}

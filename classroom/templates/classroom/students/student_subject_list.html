@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <h1>Subject List</h1>
+    <div> 
+        <!-- Iterate over object_list -->
+        {% for subject in subject_list %} 
+        <!-- Display Objects -->
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="">{{ subject.name }}</a></li>
+            </ol>
+         </nav>
+
+        <hr/>
+        <!-- If objet_list is empty  -->
+        {% empty %}
+        <div>No objects yet.</div> 
+        {% endfor %} 
+    </div>
+{% endblock %}

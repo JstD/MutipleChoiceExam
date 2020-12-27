@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {{exam.examtime.subject.name}}
+{% endblock %}
+
+{% block titlelink %}
+    {% url 'teachers:subject_detail' exam.examtime.subject.pk %}
+{% endblock %}
+
+{% block content %}
+<h1>Exam manager</h1>
+<nav>
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+    <a class="nav-item nav-link active" id="question-in-exam-tab" data-toggle="tab" href="#nav-question-in-exam" role="tab" aria-controls="nav-question-in-exam" aria-selected="true">Questions in exam</a>
+    <a class="nav-item nav-link" id="question-bank-tab" data-toggle="tab" href="#nav-question-bank" role="tab" aria-controls="nav-question-bank" aria-selected="false">Question bank</a>
+  </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+  <div class="tab-pane fade show active" id="nav-question-in-exam" role="tabpanel" aria-labelledby="question-in-exam-tab">
+      <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col-2">Question</th>
+                <th scope="col-8">Content</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+                <form action="{% url 'teachers:delete_question_from_exam' exam.pk %}" method="post">
+                    {% csrf_token %}
+                    {% for question in questions.question_in_exam %}
+                    <tr>
+                        <td class=""><a href="{% url 'teachers:question_detail' question.pk %}">{{question.pk}}</a></td>
+                        <td class="">{{question.content.text}}</td>
+                        <td><button name="btnDelete" value="{{question.pk}}" class="btn btn-primary" type="submit" style="background-color: red;">Delete</button></td>
+                    </tr>
+                    {% endfor %}
+                </form>
+            </tbody>
+      </table>
+  </div>
+  <div class="tab-pane fade" id="nav-question-bank" role="tabpanel" aria-labelledby="question-bank-tab">
+      <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col-2">Question</th>
+                <th scope="col-8">Content</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+                <form action="{% url 'teachers:add_question_to_exam' exam.pk %}" method="post">
+                    {% csrf_token %}
+                    {% for question in questions.question_bank %}
+                    <tr>
+                        <td class=""><a href="{% url 'teachers:question_detail' question.pk %}">{{question.pk}}</a></td>
+                        <td class="">{{question.content.text}}</td>
+                        <td><button name="btnAdd" value="{{question.pk}}" class="btn btn-primary" type="submit" style="background-color: red;">Add to exam</button></td>
+                    </tr>
+                    {% endfor %}
+                </form>
+            </tbody>
+      </table>
+  </div>
+</div>
+{% endblock %}
