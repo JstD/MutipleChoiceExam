@@ -1,3 +1,6 @@
+from datetime import date
+from random import randint
+
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -27,22 +30,95 @@ class StudentSignUpView(CreateView):
         user = form.save()
         login(self.request, user)
         return redirect('students:quiz_list')
-        # return HttpResponse("Hello " + str(user.username))
+
 
 @method_decorator([login_required, student_required], name='dispatch')
-class StudentSubjectView(ListView):
-    model = Subject
+class StudentCommingExam(ListView):
 
-    template_name = 'classroom/students/student_subject_list.html'
+    model = Examtime
+
+    template_name = 'classroom/students/student_comming_exam.html'
+    # context_object_name = 'students_exams'
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['taken_exam'] = Takeexam.objects.all().filter(student=self.request.user.student)
+    #
+    #     return context
 
     def get_queryset(self):
-        queryset = Subject.objects.all()
+        today = date.today()
+        queryset = Examtime.objects.all().filter(date__gt=today)
+
         return queryset
 
-@method_decorator([login_required, student_required], name='dispatch')
-class StudentExamGet(ListView):
-    model = Examtime
-    exam_semester = Examtime.semester
+@login_required
+@student_required
+def takeExam(request, pk, no_ques):
+
+    no_ques = int(no_ques)
+
+    examtime = get_object_or_404(Examtime, pk=pk)
+    exam_set = Exam.objects.filter(examtime=examtime)
+    exam_id = randint(1, len(exam_set))
+    chosen_exam = Exam.objects.filter(examtime=examtime).get(pk=exam_id)
+    ques_pres = Questionpresentation.objects.filter(exam=chosen_exam)
+    question_list = []
+    for presentation in ques_pres:
+        question_list.append(Question.objects.get(pk=presentation.question.pk))
+
+    last_ques = "Next question"
+    if no_ques < len(question_list):
+        # Retrive current answer?
+        question = question_list[no_ques]
+        if request.method == 'POST':
+            form = TakeExamForm(question=question, data=request.POST)
+            if form.is_valid():
+                student_choice = form.cleaned_data.get('answers')
+                # Get the corresponding ques pres
+                ques_pres = Questionpresentation.objects.get(exam=chosen_exam, question=question, number=no_ques+1)
+                # Get the corresponding answer
+                answer_obj = Answerpart.objects.get(answerid=student_choice,question=question)
+
+                # Create a new Answerorder
+                new_answerorder = Answerorder()
+                new_answerorder.answerid = answer_obj
+                new_answerorder.qpresentation = ques_pres
+                new_answerorder.option = student_choice
+
+                # Delete if exists a similar answerorder:
+                try:
+                    todelete = Answerorder.objects.get(qpresentation=ques_pres,studentid=request.user.student)
+                except Answerorder.DoesNotExist:
+                    todelete = None
+
+                if todelete:
+                    todelete.delete()
+                new_answerorder.studentid = request.user.student
+                new_answerorder.save()
+
+        else:
+            form = TakeExamForm(question=question)
+
+        if no_ques == len(question_list) - 1:
+            last_ques = "Complete test"
+
+        info = (no_ques + 1, question, form, examtime, last_ques)
+        context = {}
+        context['info'] = info
+        return render(request, "classroom/students/take_exam.html", context)
+
+    else:
+
+        #Save the student attempt
+        new_attempt = Takeexam()
+        new_attempt.student = request.user.student
+        new_attempt.exam = chosen_exam
+        new_attempt.save()
+
+        messages.success(request, 'Congratulations! You completed the quiz with success!')
+        return redirect('students:student_comming_exam')
+
 
 
 
@@ -61,22 +137,22 @@ class StudentExamGet(ListView):
 #         return super().form_valid(form)
 
 
-@method_decorator([login_required, student_required], name='dispatch')
-class QuizListView(ListView):
-     model = Examtime
-     ordering = ('name', )
-     context_object_name = 'quizzes'
-     template_name = 'classroom/students/quiz_list.html'
-
-     def get_queryset(self):
-         student = self.request.user.student
-         student_interests = student.interests.values_list('pk', flat=True)
-         taken_quizzes = student.quizzes.values_list('pk', flat=True)
-         queryset = Quiz.objects.filter(subject__in=student_interests) \
-             .exclude(pk__in=taken_quizzes) \
-             .annotate(questions_count=Count('questions')) \
-             .filter(questions_count__gt=0)
-         return queryset
+# @method_decorator([login_required, student_required], name='dispatch')
+# class QuizListView(ListView):
+#      model = Examtime
+#      ordering = ('name', )
+#      context_object_name = 'quizzes'
+#      template_name = 'classroom/students/quiz_list.html'
+#
+#      def get_queryset(self):
+#          student = self.request.user.student
+#          student_interests = student.interests.values_list('pk', flat=True)
+#          taken_quizzes = student.quizzes.values_list('pk', flat=True)
+#          queryset = Quiz.objects.filter(subject__in=student_interests) \
+#              .exclude(pk__in=taken_quizzes) \
+#              .annotate(questions_count=Count('questions')) \
+#              .filter(questions_count__gt=0)
+#          return queryset
 
 
 # @method_decorator([login_required, student_required], name='dispatch')

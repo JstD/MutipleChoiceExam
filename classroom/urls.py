@@ -5,9 +5,10 @@ from .views import classroom, students, teachers
 urlpatterns = [
     path('', classroom.home, name='home'),
     path('students/', include(([
-        path('', students.StudentSubjectView.as_view(), name='subject_list'),
+        # path('', students.StudentSubjectView.as_view(), name='subject_list'),
+        path('', students.StudentCommingExam.as_view(), name='student_comming_exam'),
+        path('takeexam/(?P<pk>\w+)/(?P<no_ques>\[0-9]+)/', students.takeExam, name='student_take_exam'),
         # path('', students.QuizListView.as_view(), name='quiz_list'),
-        path('', students.QuizListView.as_view(), name='quiz_list'),
         # path('interests/', students.StudentInterestsView.as_view(), name='student_interests'),
         # path('taken/', students.TakenQuizListView.as_view(), name='taken_quiz_list'),
         # path('quiz/<int:pk>/', students.take_quiz, name='take_quiz'),

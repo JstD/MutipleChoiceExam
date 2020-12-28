@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
+from django.forms import RadioSelect
 from django.forms.utils import ValidationError
 
 from classroom.models import *
@@ -122,18 +123,50 @@ class QuestionUpdateForm(forms.Form):
 #         if not has_one_correct_answer:
 #             raise ValidationError('Mark at least one answer as correct.', code='no_correct_answer')
 
+class TakeExamForm(forms.Form):
+    # answers = forms.ModelChoiceField(queryset=Answerpart.objects.none(), widget=RadioSelect(), required=False, empty_label=None)
+    answers = forms.ChoiceField()
 
+    def __init__(self, *args, **kwargs):
+        question = kwargs.pop('question')
+        super().__init__(*args, **kwargs)
+
+        answerA = question.answerpart_set.get(answerid='A').content.text
+        answerB = question.answerpart_set.get(answerid='B').content.text
+        answerC = question.answerpart_set.get(answerid='C').content.text
+        answerD = question.answerpart_set.get(answerid='D').content.text
+
+        choices = (('A', answerA),
+                   ('B', answerB),
+                   ('C', answerC),
+                   ('D', answerD),
+                   )
+        print(choices)
+        self.fields['answers'].choices = choices
+        self.fields['answers'].widget = RadioSelect()
+        # self.answers = choices
+
+
+
+
+
+# class TakeExamForm(forms.Form):
+#     def __init__(self, *args, **kwargs):
+#         question = kwargs.pop('question')
+#         super(TakeExamForm, self).__init__(*args, **kwargs)
+#         choice_list = [x for x in question.answerpart_set.all()]
+#         self.fields["answers"] = forms.ChoiceField(choices=choice_list, widget=RadioSelect)
 # class TakeQuizForm(forms.ModelForm):
 #     answer = forms.ModelChoiceField(
 #         queryset=Answer.objects.none(),
 #         widget=forms.RadioSelect(),
 #         required=True,
 #         empty_label=None)
-
+#
 #     class Meta:
 #         model = StudentAnswer
 #         fields = ('answer', )
-
+#
 #     def __init__(self, *args, **kwargs):
 #         question = kwargs.pop('question')
 #         super().__init__(*args, **kwargs)
