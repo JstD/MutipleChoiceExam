@@ -7,8 +7,17 @@ from classroom.models import *
 
 
 class TeacherSignUpForm(UserCreationForm):
+    first_name = forms.CharField(max_length=50)
+    last_name = forms.CharField(max_length=50)
+    middle_name = forms.CharField(max_length=50)
+    email = forms.EmailField(max_length=254)
+    # address = forms.CharField(max_length=255)
+    # faculty = forms.CharField(max_length=255)
+
+
     class Meta(UserCreationForm.Meta):
         model = User
+        fields = ('username', 'first_name', 'middle_name', 'last_name', 'email', 'password1', 'password2', )
 
     # def save(self, commit=True):
     #     user = super().save(commit=False)
