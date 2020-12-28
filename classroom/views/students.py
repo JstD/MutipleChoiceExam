@@ -60,15 +60,19 @@ class StudentCommingExam(ListView):
         return context
 
     def get_queryset(self):
-        # today = date.today()
-        # upcomming_exam = Examtime.objects.all().filter(date__gt=today)
-        # taken_info = Takeexam.objects.all().filter(student=self.request.user.student)
-        # # print(taken_info.values('exam'))
-        # taken_exam = Exam.objects.all().filter(exam__pk__in=taken_info.values('id'))
-        # print(taken_exam)
-        # queryset = {'upcomming_exam': upcomming_exam, 'taken_exam': taken_exam}
         today = date.today()
-        queryset = Examtime.objects.all().filter(date__gt=today)
+        upcomming_exam = Examtime.objects.all().filter(date__gt=today)
+        taken_info = Takeexam.objects.all().filter(student=self.request.user.student)
+        # print(taken_info.values('exam'))
+        taken_exam=self.request.user.student.takeexam_set
+        print(taken_exam)
+        print(upcomming_exam)
+        # taken_exam = Exam.objects.all().filter(exam__pk__in=taken_info.values('id'))
+        taken_exam = taken_info.values('exam')
+        print(taken_exam)
+        queryset = {'upcomming_exam': upcomming_exam, 'taken_exam': taken_exam}
+        # today = date.today()
+        # queryset = Examtime.objects.all().filter(date__gt=today)
         return queryset
 
 @login_required
