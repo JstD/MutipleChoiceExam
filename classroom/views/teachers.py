@@ -446,11 +446,13 @@ class QuestionBankView(ListView):
     def get_queryset(self):
         #queryset = Outcome.objects.get(pk=self.kwargs['pk']).question_set.all()
         exam = get_object_or_404(Exam, pk=self.kwargs['pk'])
+        subject = exam.examtime.subject
+        subject_outcome = Outcome.objects.filter(subject=subject)
         # print(exam)
         # queryset = Question.objects.filter(questionpresentation__exam=exam)
-        question_bank = Question.objects.all()
+        question_bank = Question.objects.filter(outcome__in=subject_outcome)
         question_in_exam = Question.objects.filter(questionpresentation__exam=exam)
-        queryset = {'question_bank': question_bank, 'question_in_exam' : question_in_exam}
+        queryset = {'question_bank': question_bank, 'question_in_exam': question_in_exam}
         # ans_set = Answerpart.objects.all()
         # queryset = {'ques_set': ques_set, 'ans_set': ans_set}
         return queryset
