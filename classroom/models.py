@@ -181,11 +181,3 @@ def auto_delete_content_with_question(sender, instance, **kwargs):
 @receiver(post_delete, sender=Answerpart)
 def auto_delete_contentwith_answerpart(sender, instance, **kwargs):
     instance.content.delete()
-
-
-# class Choose(models.Model):
-#     student = models.OneToOneField('Student', on_delete=models.CASCADE)  # Field name made lowercase.
-#     answer = models.ForeignKey('Answerorder', on_delete=models.CASCADE)  # Field name made lowercase.
-#
-#     class Meta:
-#         db_table = 'Choose'
