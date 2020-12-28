@@ -39,13 +39,13 @@
               </tr>
             </thead>
             <tbody>
-                <form action="{% url 'teachers:add_question_to_exam' exam.pk %}" method="post">
+                <form action="{% url 'teachers:delete_question_from_exam' exam.pk %}" method="post">
                     {% csrf_token %}
-                    {% for question in questions.question_bank %}
+                    {% for question in questions.question_in_exam %}
                     <tr>
                         <td class=""><a href="{% url 'teachers:question_detail' question.pk %}">{{question.pk}}</a></td>
                         <td class="">{{question.content.text}}</td>
-                        <td><button name="btnAdd" value="{{question.pk}}" class="btn btn-primary" type="submit" style="background-color: red;">Add to exam</button></td>
+                        <td><button name="btnDelete" value="{{question.pk}}" class="btn btn-primary" type="submit" style="background-color: red;">Delete</button></td>
                     </tr>
                     {% endfor %}
                 </form>
@@ -62,13 +62,13 @@
               </tr>
             </thead>
             <tbody>
-                <form action="{% url 'teachers:delete_question_from_exam' exam.pk %}" method="post">
+                <form action="{% url 'teachers:add_question_to_exam' exam.pk %}" method="post">
                     {% csrf_token %}
-                    {% for question in questions.question_in_exam %}
+                    {% for question in questions.question_bank %}
                     <tr>
                         <td class=""><a href="{% url 'teachers:question_detail' question.pk %}">{{question.pk}}</a></td>
                         <td class="">{{question.content.text}}</td>
-                        <td><button name="btnDelete" value="{{question.pk}}" class="btn btn-primary" type="submit" style="background-color: red;">Delete</button></td>
+                        <td><button name="btnAdd" value="{{question.pk}}" class="btn btn-primary" type="submit" style="background-color: red;">Add to exam</button></td>
                     </tr>
                     {% endfor %}
                 </form>
