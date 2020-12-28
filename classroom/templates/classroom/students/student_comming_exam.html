@@ -1,10 +1,73 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <h1>Upcomming Exam</h1>
+    <div>
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Subject Name</th>
+                <th scope="col">Date</th>
+                <th scope="col">Semester</th>
+                  <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    {% for examtime in examtime_list %}
+                    <tr>
+                        <td class="">{{examtime.subject.name}}</td>
+                        <td class="">{{examtime.date}}</td>
+                        <td class="">{{examtime.semester}}</td>
+                        <td class="text-right">
+                            <a href="{% url 'students:student_take_exam' pk=examtime.pk no_ques=0 %}" class="btn btn-primary">Start quiz</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </form>
+            </tbody>
+          </table>
+    </div>
+
+<!--    <h1>Taken Exam</h1>-->
+<!--    <div>-->
+<!--        <table class="table table-striped">-->
+<!--            <thead>-->
+<!--              <tr>-->
+<!--                <th scope="col">Subject Name</th>-->
+<!--                <th scope="col">Date</th>-->
+<!--                <th scope="col">Semester</th>-->
+<!--                  <th scope="col"></th>-->
+<!--              </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--                <form action="" method="post">-->
+<!--                    {% csrf_token %}-->
+<!--                    {% for exam in taken_exam %}-->
+<!--                    <tr>-->
+<!--                        <td class="">{{exam.exam.examtime.subject.name}}</td>-->
+<!--&lt;!&ndash;                        <td class="">{{examtime.date}}</td>&ndash;&gt;-->
+<!--&lt;!&ndash;                        <td class="">{{examtime.semester}}</td>&ndash;&gt;-->
+<!--&lt;!&ndash;                        <td class="text-right">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <a href="{% url 'students:student_take_exam' pk=examtime.pk no_ques=0 %}" class="btn btn-primary">Start quiz</a>&ndash;&gt;-->
+<!--&lt;!&ndash;                        </td>&ndash;&gt;-->
+<!--                    </tr>-->
+<!--                    {% endfor %}-->
+<!--                </form>-->
+<!--            </tbody>-->
+<!--          </table>-->
+<!--    </div>-->
+
+<!--<script type="text/javascript">-->
+<!--    function clicked() {-->
+<!--       if (confirm('Do you really want to take this exam?')) {-->
+<!--           btnTakeExam.submit();-->
+<!--       } else {-->
+<!--           return ;-->
+<!--       }-->
+<!--    }-->
+<!--</script>-->
+{% endblock %}
