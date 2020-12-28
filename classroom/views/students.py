@@ -26,8 +26,8 @@ class StudentSignUpView(CreateView):
     def form_valid(self, form):
         user = form.save()
         login(self.request, user)
-        # return redirect('students:quiz_list')
-        return HttpResponse("Hello " + str(user.username))
+        return redirect('students:quiz_list')
+        # return HttpResponse("Hello " + str(user.username))
 
 @method_decorator([login_required, student_required], name='dispatch')
 class StudentSubjectView(ListView):
