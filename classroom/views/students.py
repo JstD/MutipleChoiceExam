@@ -65,8 +65,10 @@ def takeExam(request, pk, no_ques):
 
     examtime = get_object_or_404(Examtime, pk=pk)
     exam_set = Exam.objects.filter(examtime=examtime)
-    exam_id = randint(1, len(exam_set))
-    chosen_exam = Exam.objects.filter(examtime=examtime).get(pk=exam_id)
+    exam_id = randint(0, len(exam_set)-1)
+    exam_code = exam_set[exam_id].code
+    chosen_exam = Exam.objects.filter(examtime=examtime).get(code=exam_code)
+
     ques_pres = Questionpresentation.objects.filter(exam=chosen_exam)
     question_list = []
     for presentation in ques_pres:
