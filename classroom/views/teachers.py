@@ -286,10 +286,10 @@ class OutcomeListView(ListView):
         subject = get_object_or_404(Subject, pk=self.kwargs['pk'])
         context["subject"] = subject
         context["form"] = OutcomeAddForm()
-        if self.request.user.teacher.pk == Teacher.objects.get(teach__role='Manager', teach__subject=subject).pk:
-            context["is_manager"] = True
+        if self.request.user.teacher.pk == Teacher.objects.get(teach__role='Main', teach__subject=subject).pk:
+            context["is_main"] = True
         else:
-            context["is_manager"] = False
+            context["is_main"] = False
         return context
 
     def get_queryset(self):

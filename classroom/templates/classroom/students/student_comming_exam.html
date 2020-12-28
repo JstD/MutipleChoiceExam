@@ -17,7 +17,7 @@
             <tbody>
                 <form action="" method="post">
                     {% csrf_token %}
-                    {% for examtime in examtime_list %}
+                    {% for examtime in students_exams.upcomming_exam %}
                     <tr>
                         <td class="">{{examtime.subject.name}}</td>
                         <td class="">{{examtime.date}}</td>
@@ -31,6 +31,35 @@
             </tbody>
           </table>
     </div>
+
+<!--    <h1>Upcomming Exam</h1>-->
+<!--    <div>-->
+<!--        <table class="table table-striped">-->
+<!--            <thead>-->
+<!--              <tr>-->
+<!--                <th scope="col">Subject Name</th>-->
+<!--                <th scope="col">Date</th>-->
+<!--                <th scope="col">Semester</th>-->
+<!--                  <th scope="col"></th>-->
+<!--              </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--                <form action="" method="post">-->
+<!--                    {% csrf_token %}-->
+<!--                    {% for taken in students_exams.taken_exam %}-->
+<!--                    <tr>-->
+<!--                        <td class="">{{taken.exam.examtime.subject.name}}</td>-->
+<!--&lt;!&ndash;                        <td class="">{{examtime.date}}</td>&ndash;&gt;-->
+<!--&lt;!&ndash;                        <td class="">{{examtime.semester}}</td>&ndash;&gt;-->
+<!--&lt;!&ndash;                        <td class="text-right">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <a href="{% url 'students:student_take_exam' pk=examtime.pk no_ques=0 %}" class="btn btn-primary">Start quiz</a>&ndash;&gt;-->
+<!--&lt;!&ndash;                        </td>&ndash;&gt;-->
+<!--                    </tr>-->
+<!--                    {% endfor %}-->
+<!--                </form>-->
+<!--            </tbody>-->
+<!--          </table>-->
+<!--    </div>-->
 
 
 

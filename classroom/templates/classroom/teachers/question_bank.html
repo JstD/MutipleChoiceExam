@@ -2,6 +2,8 @@
 
 {% load crispy_forms_tags %}
 
+{% load static %}
+
 {% block title %}
     {{exam.examtime.subject.name}}
 {% endblock %}
@@ -10,12 +12,20 @@
     {% url 'teachers:subject_detail' exam.examtime.subject.pk %}
 {% endblock %}
 
+{% block navigation %} 
+    <a href="{% url 'teachers:exam_detail' exam.pk %}"><img src="{% static 'img/icons8-back-48.png' %}" alt="Back"></a> 
+{% endblock %}
+
+{% block header %}
+    Exam Manager
+{% endblock %}
+
 {% block content %}
-<h1>Exam manager</h1>
+
 <nav>
   <div class="nav nav-tabs" id="nav-tab" role="tablist">
-    <a class="nav-item nav-link active" id="question-in-exam-tab" data-toggle="tab" href="#nav-question-in-exam" role="tab" aria-controls="nav-question-in-exam" aria-selected="true">Questions in exam</a>
-    <a class="nav-item nav-link" id="question-bank-tab" data-toggle="tab" href="#nav-question-bank" role="tab" aria-controls="nav-question-bank" aria-selected="false">Question bank</a>
+    <a class="nav-item nav-link active" id="question-in-exam-tab" data-toggle="tab" href="#nav-question-in-exam" role="tab" aria-controls="nav-question-in-exam" aria-selected="true">Questions bank</a>
+    <a class="nav-item nav-link" id="question-bank-tab" data-toggle="tab" href="#nav-question-bank" role="tab" aria-controls="nav-question-bank" aria-selected="false">Question in exam</a>
   </div>
 </nav>
 <div class="tab-content" id="nav-tabContent">
