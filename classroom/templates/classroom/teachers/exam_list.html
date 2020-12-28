@@ -2,6 +2,8 @@
 
 {% load crispy_forms_tags %}
 
+{% load static %}
+
 {% block title %}
     {{examtime.subject.name}}
 {% endblock %}
@@ -10,10 +12,18 @@
     {% url 'teachers:subject_detail' examtime.subject.pk %}
 {% endblock %}
 
+{% block navigation %} 
+    <a href="{% url 'teachers:examtime_list' examtime.subject.pk %}"><img src="{% static 'img/icons8-back-48.png' %}" alt="Back"></a> 
+{% endblock %}
+
+{% block header %}
+    Exam List
+{% endblock %}
+
 {% block content %}
 <div class="container-fulid">
-    <h1>Exam List</h1>
-    <h5><a href="{% url 'teachers:examtime_list' examtime.subject.pk %}">Date: {{examtime.date}} - Semester: {{examtime.semester}}</a></h5>
+
+    <h5>Date: {{examtime.date}} - Semester: {{examtime.semester}}</h5>
 
     <div class="text-center my-4">
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">Add Exam</button>

@@ -2,6 +2,8 @@
 
 {% load crispy_forms_tags %}
 
+{% load static %}
+
 {% block title %}
     {{question.outcome.subject.name}}
 {% endblock %}
@@ -10,9 +12,17 @@
     {% url 'teachers:subject_detail' question.outcome.subject.pk %}
 {% endblock %}
 
+{% block navigation %} 
+    <a href="{% url 'teachers:question_list' question.outcome.subject.pk %}"><img src="{% static 'img/icons8-back-48.png' %}" alt="Back"></a> 
+{% endblock %}
+
+{% block header %}
+{{ question.pk }}
+{% endblock %}
+
 {% block content %}
 <div class="container-fulid">
-    <h1>{{ question.pk }}</h1>
+
     <table class="table table-hover">
         <tbody>
           <tr>
