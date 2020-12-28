@@ -12,7 +12,15 @@
     {% url 'teachers:subject_detail' exam.examtime.subject.pk %}
 {% endblock %}
 
-{% block navigation %} 
+{% block navigation %}
+<a style="color: white;" href="{% url 'teachers:subject_detail' exam.examtime.subject.pk %}">{{exam.examtime.subject.name}}</a>
+/
+<a style="color: white;" href="{% url 'teachers:examtime_list' exam.examtime.subject.pk %}">examtimes</a>
+/
+<a style="color: white;" href="{% url 'teachers:exam_list' exam.examtime.pk %}">{{exam.examtime.date}} - semester {{exam.examtime.semester}}</a>
+{% endblock %}
+
+{% block back %} 
     <a href="{% url 'teachers:exam_list' exam.examtime.pk %}"><img src="{% static 'img/icons8-back-48.png' %}" alt="Back"></a> 
 {% endblock %}
 
