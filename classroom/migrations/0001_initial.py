@@ -295,6 +295,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name='answerorder',
-            unique_together={('qpresentation', 'answerid'), ('qpresentation', 'option')},
+            unique_together={('qpresentation', 'option'), ('qpresentation', 'answerid')},
         ),
     ]

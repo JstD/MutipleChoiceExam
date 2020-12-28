@@ -243,6 +243,8 @@ class ExamDetailView(DetailView):
             context["role"] = 'Manager'
         if self.request.user.teacher.pk == Teacher.objects.get(teach__role='Main', teach__subject=subject).pk:
             context["role"] = 'Main'
+        context['main_teacher_name'] = exam.mainteacher.user.last_name + ' ' + exam.mainteacher.user.middle_name + ' ' + exam.mainteacher.user.first_name
+        context['manager_name'] = exam.manager.user.last_name + ' ' + exam.manager.user.middle_name + ' ' + exam.manager.user.first_name
         return context
 
     def get_queryset(self):
@@ -425,6 +427,7 @@ class QuestionDetailView(DetailView):
             'answer_result_3': question.answerpart_set.get(answerid='C').result,
             'answer_result_4': question.answerpart_set.get(answerid='D').result,
         })
+        context['teacher_name'] = question.teacher.user.last_name + ' ' + question.teacher.user.middle_name + ' ' + question.teacher.user.first_name
         return context
 
     def get_queryset(self):

@@ -44,6 +44,10 @@
               {% endif %}
             </div>
           </div>
+          <div>
+            {% block navigation %}
+            {% endblock %}
+          </div>
           <div class="card mb-3">
             <div class="card-body">
               {% for message in messages %}
@@ -56,7 +60,7 @@
               {% endfor %}
               <div class="d-flex">
                 <div>
-                  {% block navigation %} <a href="{% url 'home' %}"><img src="{% static 'img/icons8-back-48.png' %}" alt="Back"></a> {% endblock %}
+                  {% block back %} {% endblock %}
                 </div>
                 <h1>
                   {% block header %} {% endblock %}
@@ -66,13 +70,13 @@
               {% endblock %}
             </div>
           </div>
-          <footer>
+          <!-- <footer>
             <a href="https://simpleisbetterthancomplex.com">© SimpleIsBetterThanComplex.com</a>
             /
             <a href="https://simpleisbetterthancomplex.com/tutorial/2018/01/18/how-to-implement-multiple-user-types-with-django.html">Read more about this example</a>
             /
             <a href="https://github.com/sibtc/django-multiple-user-types-example">GitHub repository</a>
-          </footer>
+          </footer> -->
         </div>
       </div>
     </div>

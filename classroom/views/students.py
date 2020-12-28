@@ -29,19 +29,8 @@ class StudentSignUpView(CreateView):
     def form_valid(self, form):
         user = form.save()
         login(self.request, user)
-        return redirect('students:student_comming_exam')
-        # return HttpResponse("Hello " + str(user.username))
+        return redirect('home')
 
-
-# @method_decorator([login_required, student_required], name='dispatch')
-# class StudentSubjectView(ListView):
-#     model = Subject
-#
-#     template_name = 'classroom/students/student_subject_list.html'
-#
-#     def get_queryset(self):
-#         queryset = Subject.objects.all()
-#         return queryset
 
 @method_decorator([login_required, student_required], name='dispatch')
 class StudentCommingExam(ListView):
