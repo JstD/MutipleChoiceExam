@@ -40,16 +40,21 @@ class StudentCommingExam(ListView):
     template_name = 'classroom/students/student_comming_exam.html'
     # context_object_name = 'students_exams'
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['taken_exam'] = Takeexam.objects.all().filter(student=self.request.user.student)
-    #
-    #     return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # context['taken_exam'] = Takeexam.objects.all().filter(student=self.request.user.student)
+        # today = date.today()
+        # context['upcomming_exam'] = queryset = Examtime.objects.all().filter(date__gt=today)
+
+        return context
 
     def get_queryset(self):
         today = date.today()
+        # upcomming_exam = Examtime.objects.all().filter(date__gt=today)
+        # taken_exam = Takeexam.objects.all().filter(student=self.request.user.student)
+        # queryset = {'question_bank': question_bank, 'question_in_exam': question_in_exam}
+        today = date.today()
         queryset = Examtime.objects.all().filter(date__gt=today)
-
         return queryset
 
 @login_required
