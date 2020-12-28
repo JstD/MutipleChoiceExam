@@ -12,7 +12,15 @@
     {% url 'teachers:subject_detail' question.outcome.subject.pk %}
 {% endblock %}
 
-{% block navigation %} 
+{% block navigation %}
+<a style="color: white;" href="{% url 'teachers:subject_detail' question.outcome.subject.pk %}">{{question.outcome.subject.name}}</a>
+/
+<a style="color: white;" href="{% url 'teachers:outcome_list' question.outcome.subject.pk %}">outcomes</a>
+/
+<a style="color: white;" href="{% url 'teachers:question_list' question.outcome.pk %}">{{question.outcome.outcome}}</a>
+{% endblock %}
+
+{% block back %} 
     <a href="{% url 'teachers:question_list' question.outcome.subject.pk %}"><img src="{% static 'img/icons8-back-48.png' %}" alt="Back"></a> 
 {% endblock %}
 
@@ -27,7 +35,7 @@
         <tbody>
           <tr>
             <th scope="row">Teacher:</th>
-            <td colspan="12">{{question.teacher.user.username}}</td>
+            <td colspan="12">{{teacher_name}}</td>
           </tr>
           <tr>
             <th scope="row">Modify Date:</th>
@@ -35,7 +43,7 @@
           </tr>
           <tr>
             <th scope="row">Outcome:</th>
-            <td colspan="12"><a href="{% url 'teachers:question_list' question.outcome.pk %}">{{ question.outcome.outcome }}</a></td>
+            <td colspan="12">{{ question.outcome.outcome }}</td>
           </tr>
         </tbody>
     </table>
