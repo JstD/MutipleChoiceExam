@@ -223,6 +223,33 @@ class ExamResultView(DetailView):
     def get_queryset(self):
         return Takeexam.objects.all()
 
+
+@method_decorator([login_required, student_required], name='dispatch')
+class PastExamView(DetailView):
+    model = Exam
+    template_name = 'classroom/students/view_past_exam.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        exam = self.get_object()
+        context['results'] = []
+        class Result(object):
+            pass
+        for question_presentation in exam.questionpresentation_set.all():
+            result = Result()
+            result.order = question_presentation.number
+            result.question = question_presentation.question
+            result.answer_a = question_presentation.question.answerpart_set.get(answerid='A')
+            result.answer_b = question_presentation.question.answerpart_set.get(answerid='B') 
+            result.answer_c = question_presentation.question.answerpart_set.get(answerid='C') 
+            result.answer_d = question_presentation.question.answerpart_set.get(answerid='D') 
+            context['results'].append(result)
+            
+        return context
+
+    def get_queryset(self):
+        return Exam.objects.all()
+
 # @method_decorator([login_required, student_required], name='dispatch')
 # class StudentInterestsView(UpdateView):
 #     model = Student
