@@ -103,27 +103,27 @@ WSGI_APPLICATION = 'django_school.wsgi.application'
 #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'multiple_choice_exam',
-#         'USER': 'root',
-#         'PASSWORD': '8pJ-:G&b}aPUP9*6',
-#         'HOST': 'localhost',
-#         'PORT': '3306',
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'multiple_choice_exam',
         'USER': 'root',
-        'PASSWORD': 'aBcDe@12345',
+        'PASSWORD': '8pJ-:G&b}aPUP9*6',
         'HOST': 'localhost',
-        'PORT': '5432',
+        'PORT': '3306',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'multiple_choice_exam',
+#         'USER': 'root',
+#         'PASSWORD': 'aBcDe@12345',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 
 
 # Internationalization

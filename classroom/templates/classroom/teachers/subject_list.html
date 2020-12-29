@@ -12,20 +12,33 @@ Subject List
 {% endblock %}
 
 {% block content %}
-    <div> 
-        <!-- Iterate over object_list -->
-        {% for subject in subject_list %} 
-        <!-- Display Objects -->
-        <div><a href="{% url 'teachers:subject_detail' subject.pk %}">{{ subject.name }}</a></div> 
-        <div id="chartContainer" style="height: 370px; width: 100%;">
+    <div>
+        <div>
+            <table class="table table-striped">
+                <thead>
+                  <tr>
+                        <th scope="col">Subject Name</th>
+                        <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        {% for subject in subject_list %}
+                        <tr>
+                            <td class="col-2">{{subject.name}}</td>
+                            <td>
+                                <a href="{% url 'teachers:subject_detail' subject.pk %}" class="btn btn-primary"> Explore </a>
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+                    </form>
+                </tbody>
+            </table>
         </div>
 
-        <hr/> 
 
-        <!-- If objet_list is empty  -->
-        {% empty %} 
-        <div>No objects yet.</div> 
-        {% endfor %} 
     </div>
 {% endblock %}
 
