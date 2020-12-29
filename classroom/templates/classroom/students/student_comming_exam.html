@@ -3,65 +3,135 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-    <h1>Upcomming Exam</h1>
-    <div>
-        <table class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col">Subject Name</th>
-                <th scope="col">Date</th>
-                <th scope="col">Semester</th>
-                  <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody>
-                <form action="" method="post" >
-                    {% csrf_token %}
-                    {% for examtime in upcomming_exam %}
-                    <tr>
-                        <td class="">{{examtime.subject.name}}</td>
-                        <td class="">{{examtime.date}}</td>
-                        <td class="">{{examtime.semester}}</td>
-                        <td class="text-right">
-                            <a href="{% url 'students:student_take_exam' pk=examtime.pk no_ques=0 %}" class="btn btn-primary">Start quiz</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </form>
-            </tbody>
-          </table>
+
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="to-do-exam-tab" data-toggle="tab" href="#nav-to-do-exam" role="tab" aria-controls="nav-to-do-exam" aria-selected="true">Your exams</a>
+        <a class="nav-item nav-link" id="taken-exam-tab" data-toggle="tab" href="#nav-taken-exam" role="tab" aria-controls="nav-taken-exam" aria-selected="false">Taken exams</a>
+        <a class="nav-item nav-link" id="past-exam-tab" data-toggle="tab" href="#nav-past-exam" role="tab" aria-controls="nav-past-exam" aria-selected="false">Past exams</a>
+    </div>
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-to-do-exam" role="tabpanel" aria-labelledby="to-do-exam-tab">
+            <h1>Do these exams now</h1>
+            <div>
+                <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col">Subject Name</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Semester</th>
+                          <th scope="col"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <form action="" method="post" >
+                            {% csrf_token %}
+                            {% for examtime in to_take_exam %}
+                            <tr>
+                                <td class="">{{examtime.subject.name}}</td>
+                                <td class="">{{examtime.date}}</td>
+                                <td class="">{{examtime.semester}}</td>
+                                <td class="text-right">
+                                    <a href="{% url 'students:student_take_exam' pk=examtime.pk no_ques=0 %}" class="btn btn-primary">Start quiz</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </form>
+                    </tbody>
+                  </table>
+            </div>
+
+
+            <h1>Upcomming Exams</h1>
+            <div>
+                <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col">Subject Name</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Semester</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <form action="" method="post" >
+                            {% csrf_token %}
+                            {% for examtime in upcomming_exam %}
+                            <tr>
+                                <td class="">{{examtime.subject.name}}</td>
+                                <td class="">{{examtime.date}}</td>
+                                <td class="">{{examtime.semester}}</td>
+                            </tr>
+                            {% endfor %}
+                        </form>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="nav-taken-exam" role="tabpanel" aria-labelledby="taken-exam-tab">
+            <h1>Taken Exams</h1>
+            <div>
+                <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col">Subject Name</th>
+                        <th scope="col">Date took</th>
+                        <th scope="col">Semester</th>
+                        <th scope="col">Exam Code</th>
+                        <th scope="col"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            {% for taken in taken_exam %}
+                            <tr>
+                                <td class="">{{taken.exam.examtime.subject.name}}</td>
+                                <td class="">{{taken.exam.examtime.date}}</td>
+                                <td class="">{{taken.exam.examtime.semester}}</td>
+                                <td class="">{{taken.exam.code}}</td>
+                                <td class="text-right">
+                                    <a href="{% url 'students:view_result' pk=taken.pk %}" class="btn btn-primary">View results</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </form>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="nav-past-exam" role="tabpanel" aria-labelledby="past-exam-tab">
+            <h1>Past Exams</h1>
+                <div>
+                    <table class="table table-striped">
+                        <thead>
+                          <tr>
+                            <th scope="col">Subject Name</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Semester</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            <form action="" method="post" >
+                                {% csrf_token %}
+                                {% for examtime in outdated_exam %}
+                                <tr>
+                                    <td class="">{{examtime.subject.name}}</td>
+                                    <td class="">{{examtime.date}}</td>
+                                    <td class="">{{examtime.semester}}</td>
+                                </tr>
+                                {% endfor %}
+                            </form>
+                        </tbody>
+                      </table>
+                </div>
+        </div>
     </div>
 
-    <h1>Taken Exam</h1>
-    <div>
-        <table class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col">Subject Name</th>
-                <th scope="col">Date took</th>
-                <th scope="col">Semester</th>
-                <th scope="col">Exam Code</th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody>
-                <form action="" method="post">
-                    {% csrf_token %}
-                    {% for taken in taken_exam %}
-                    <tr>
-                        <td class="">{{taken.exam.examtime.subject.name}}</td>
-                        <td class="">{{taken.exam.examtime.date}}</td>
-                        <td class="">{{taken.exam.examtime.semester}}</td>
-                        <td class="">{{taken.exam.code}}</td>
-                        <td class="text-right">
-                            <a href="{% url 'students:view_result' pk=taken.pk %}" class="btn btn-primary">View results</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </form>
-            </tbody>
-          </table>
-    </div>
+
+
+
+
+
 
 
 
