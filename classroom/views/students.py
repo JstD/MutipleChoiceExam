@@ -98,6 +98,7 @@ def takeExam(request, pk, no_ques):
                 new_answerorder.save()
 
         else:
+            print("Not post")
             form = TakeExamForm(question=question)
 
         if no_ques == len(question_list) - 1:

@@ -62,31 +62,31 @@
           </table>
     </div>
 
-    <h1>Taken Exams</h1>
-    <div>
-        <table class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col">Subject Name</th>
-                <th scope="col">Date took</th>
-                <th scope="col">Semester</th>
-                  <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody>
-                <form action="" method="post">
-                    {% csrf_token %}
-                    {% for taken in taken_exam %}
-                    <tr>
-                        <td class="">{{taken.exam.examtime.subject.name}}</td>
-                        <td class="">{{taken.exam.examtime.date}}</td>
-                        <td class="">{{taken.exam.examtime.semester}}</td>
-                    </tr>
-                    {% endfor %}
-                </form>
-            </tbody>
-          </table>
-    </div>
+<!--    <h1>Taken Exams</h1>-->
+<!--    <div>-->
+<!--        <table class="table table-striped">-->
+<!--            <thead>-->
+<!--              <tr>-->
+<!--                <th scope="col">Subject Name</th>-->
+<!--                <th scope="col">Date took</th>-->
+<!--                <th scope="col">Semester</th>-->
+<!--                  <th scope="col"></th>-->
+<!--              </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--                <form action="" method="post">-->
+<!--                    {% csrf_token %}-->
+<!--                    {% for taken in taken_exam %}-->
+<!--                    <tr>-->
+<!--                        <td class="">{{taken.exam.examtime.subject.name}}</td>-->
+<!--                        <td class="">{{taken.exam.examtime.date}}</td>-->
+<!--                        <td class="">{{taken.exam.examtime.semester}}</td>-->
+<!--                    </tr>-->
+<!--                    {% endfor %}-->
+<!--                </form>-->
+<!--            </tbody>-->
+<!--          </table>-->
+<!--    </div>-->
 
 
     <h1>Past Exams</h1>
