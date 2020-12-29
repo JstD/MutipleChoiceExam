@@ -136,9 +136,10 @@ class Questionpresentation(models.Model):
 
 class Answerorder(models.Model):
     qpresentation = models.ForeignKey('Questionpresentation', on_delete=models.CASCADE)
-    answerid = models.PositiveIntegerField()
+    answerid = models.ForeignKey('Answerpart', on_delete=models.CASCADE)
     OPTION_CHOICE = [('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D'), ('E', 'E')]
     option = models.CharField(max_length=1, choices=OPTION_CHOICE)
+    studentid = models.ForeignKey('Student', on_delete=models.CASCADE)
 
     class Meta:
         # managed = False
@@ -150,12 +151,10 @@ class Student(models.Model):
     class_field = models.CharField(max_length=20, blank=True, null=True)
     yearofadmission = models.DecimalField(max_digits=4, decimal_places=0, blank=True, null=True)
     exams = models.ManyToManyField(Exam, through=Takeexam)
-    answerorders = models.ManyToManyField(Answerorder)
 
     class Meta:
         # managed = False
         db_table = 'Student'
-
 
 
 class Answerpart(models.Model):

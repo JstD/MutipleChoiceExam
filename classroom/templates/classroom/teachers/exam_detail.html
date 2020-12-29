@@ -2,6 +2,8 @@
 
 {% load crispy_forms_tags %}
 
+{% load static %}
+
 {% block title %}
     {{exam.examtime.subject.name}}
 {% endblock %}
@@ -10,19 +12,35 @@
     {% url 'teachers:subject_detail' exam.examtime.subject.pk %}
 {% endblock %}
 
+{% block navigation %}
+<a style="color: white;" href="{% url 'teachers:subject_detail' exam.examtime.subject.pk %}">{{exam.examtime.subject.name}}</a>
+/
+<a style="color: white;" href="{% url 'teachers:examtime_list' exam.examtime.subject.pk %}">examtimes</a>
+/
+<a style="color: white;" href="{% url 'teachers:exam_list' exam.examtime.pk %}">{{exam.examtime.date}} - semester {{exam.examtime.semester}}</a>
+{% endblock %}
+
+{% block back %} 
+    <a href="{% url 'teachers:exam_list' exam.examtime.pk %}"><img src="{% static 'img/icons8-back-48.png' %}" alt="Back"></a> 
+{% endblock %}
+
+{% block header %}
+  {{ exam.code }}
+{% endblock %}
+
 {% block content %}
 <div class="container-fulid">
-    <h1>{{ exam.code }}</h1>
+    
     <table class="table table-hover">
         <tbody>
           <tr>
             <th scope="row">Examtime:</th>
-            <td colspan="12"><a href="{% url 'teachers:exam_list' exam.examtime.pk %}">Date: {{exam.examtime.date}} - Semester: {{exam.examtime.semester}}</a></td>
+            <td colspan="12">Date: {{exam.examtime.date}} - Semester: {{exam.examtime.semester}}</td>
             <td></td>
           </tr>
           <tr>
             <th scope="row">Main Teacher:</th>
-            <td colspan="12">{{ exam.mainteacher.user.username }}</td>
+            <td colspan="12">{{ main_teacher_name }}</td>
             <td></td>
           </tr>
           <tr>
@@ -39,7 +57,7 @@
           </tr>
           <tr>
             <th scope="row">Manager:</th>
-            <td colspan="12">{{ exam.manager.user.username }}</td>
+            <td colspan="12">{{ manager_name }}</td>
             <td></td>
           </tr>
           <tr>

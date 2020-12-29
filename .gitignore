@@ -1,2 +1,3 @@
-classroom/__pycache__
-django_school/__pycache__
+classroom/__pycache__/
+django_school/__pycache__/
+django_school/settings.py
