@@ -37,29 +37,59 @@ class StudentSignUpView(CreateView):
 def studentExam(request):
     today = date.today()
     upcomming_exam = Examtime.objects.all().filter(date__gt=today)
-    to_take_exam = Examtime.objects.all().filter(date=today)
-    outdated_exam = Examtime.objects.all().filter(date__lt=today)
     taken_exam = request.user.student.takeexam_set.all()
-
-    students_exam = {'upcomming_exam': upcomming_exam,
-                     'taken_exam': taken_exam,
-                     'to_take_exam': to_take_exam,
-                     'outdated_exam': outdated_exam,
-                     }
+    print(taken_exam)
+    print(upcomming_exam)
+    # taken_exam = Exam.objects.all().filter(exam__pk__in=taken_info.values('id'))
+    # taken_exam = taken_info.values('exam')
+    # print(taken_exam)
+    students_exam = {'upcomming_exam': upcomming_exam, 'taken_exam': taken_exam}
     return render(request, 'classroom/students/student_comming_exam.html', students_exam)
+
+
+# @method_decorator([login_required, student_required], name='dispatch')
+# class StudentCommingExam(ListView):
+#     model = Examtime
+#     context_object_name = 'students_exams'
+#     template_name = 'classroom/students/student_comming_exam.html'
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['taken_exam'] = self.request.user.student.takeexam_set.all()
+#         today = date.today()
+#         context['upcomming_exam'] = Examtime.objects.all().filter(date__gt=today)
+#
+#         return context
+#
+#     def get_queryset(self):
+#         # print(self.kwargs['pk'])
+#         # today = date.today()
+#         # upcomming_exam = Examtime.objects.all().filter(date__gt=today)
+#         #
+#         # # print(taken_info.values('exam'))
+#         # taken_exam = self.request.user.student.takeexam_set.all()
+#         # print(taken_exam)
+#         # print(upcomming_exam)
+#         # # taken_exam = Exam.objects.all().filter(exam__pk__in=taken_info.values('id'))
+#         # # taken_exam = taken_info.values('exam')
+#         # # print(taken_exam)
+#         # queryset = {'upcomming_exam': upcomming_exam, 'taken_exam': taken_exam}
+#
+#         # print(queryset)
+#         today = date.today()
+#         queryset = Examtime.objects.all().filter(date__gt=today)
+#         return queryset
+
 
 @login_required
 @student_required
 def takeExam(request, pk, no_ques):
-    print("take init")
     no_ques = int(no_ques)
-    print(pk)
+
     examtime = get_object_or_404(Examtime, pk=pk)
     exam_set = Exam.objects.filter(examtime=examtime)
     exam_id = randint(0, len(exam_set) - 1)
-    print(exam_id)
     exam_code = exam_set[exam_id].code
-    print(exam_code)
     chosen_exam = Exam.objects.filter(examtime=examtime).get(code=exam_code)
 
     ques_pres = Questionpresentation.objects.filter(exam=chosen_exam)
@@ -103,79 +133,7 @@ def takeExam(request, pk, no_ques):
         if no_ques == len(question_list) - 1:
             last_ques = "Complete test"
 
-        info = (no_ques + 1, question, form, examtime, last_ques, exam_id)
-        context = {}
-        context['info'] = info
-        return render(request, "classroom/students/take_exam.html", context)
-
-    else:
-        # Save the student attempt
-        new_attempt = Takeexam()
-        new_attempt.student = request.user.student
-        new_attempt.exam = chosen_exam
-        new_attempt.save()
-
-        messages.success(request, 'Congratulations! You completed the quiz with success!')
-        return redirect('students:student_comming_exam')
-
-
-@login_required
-@student_required
-def takeSpecificExam(request, pk, eid, no_ques):
-    print("take 1")
-    no_ques = int(no_ques)
-    print(pk)
-    examtime = get_object_or_404(Examtime, pk=pk)
-    exam_set = Exam.objects.filter(examtime=examtime)
-    print(eid)
-    exam_id = int(eid)
-    exam_code = exam_set[exam_id].code
-    print(exam_id)
-    print(exam_code)
-    chosen_exam = Exam.objects.filter(examtime=examtime).get(code=exam_code)
-
-    ques_pres = Questionpresentation.objects.filter(exam=chosen_exam)
-    question_list = []
-    for presentation in ques_pres:
-        question_list.append(Question.objects.get(pk=presentation.question.pk))
-
-    last_ques = "Next question"
-    if no_ques < len(question_list):
-        # Retrive current answer?
-        question = question_list[no_ques]
-        if request.method == 'POST':
-            form = TakeExamForm(question=question, data=request.POST)
-            if form.is_valid():
-                student_choice = form.cleaned_data.get('answers')
-                # Get the corresponding ques pres
-                ques_pres = Questionpresentation.objects.get(exam=chosen_exam, question=question, number=no_ques + 1)
-                # Get the corresponding answer
-                answer_obj = Answerpart.objects.get(answerid=student_choice, question=question)
-
-                # Create a new Answerorder
-                new_answerorder = Answerorder()
-                new_answerorder.answerid = answer_obj
-                new_answerorder.qpresentation = ques_pres
-                new_answerorder.option = student_choice
-
-                # Delete if exists a similar answerorder:
-                try:
-                    todelete = Answerorder.objects.get(qpresentation=ques_pres, studentid=request.user.student)
-                except Answerorder.DoesNotExist:
-                    todelete = None
-
-                if todelete:
-                    todelete.delete()
-                new_answerorder.studentid = request.user.student
-                new_answerorder.save()
-
-        else:
-            form = TakeExamForm(question=question)
-
-        if no_ques == len(question_list) - 1:
-            last_ques = "Complete test"
-
-        info = (no_ques + 1, question, form, examtime, last_ques, exam_id)
+        info = (no_ques + 1, question, form, examtime, last_ques)
         context = {}
         context['info'] = info
         return render(request, "classroom/students/take_exam.html", context)
@@ -191,6 +149,7 @@ def takeSpecificExam(request, pk, eid, no_ques):
         messages.success(request, 'Congratulations! You completed the quiz with success!')
         return redirect('students:student_comming_exam')
 
+<<<<<<< HEAD
 
 @method_decorator([login_required, student_required], name='dispatch')
 class ExamResultView(DetailView):
@@ -211,6 +170,8 @@ class ExamResultView(DetailView):
     def get_queryset(self):
         return Takeexam.objects.all()
 
+=======
+>>>>>>> parent of 3517dc1... Less bug version
 # @method_decorator([login_required, student_required], name='dispatch')
 # class StudentInterestsView(UpdateView):
 #     model = Student

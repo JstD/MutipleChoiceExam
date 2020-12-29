@@ -3,8 +3,7 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-
-    <h1>Do these exams now</h1>
+    <h1>Upcomming Exam</h1>
     <div>
         <table class="table table-striped">
             <thead>
@@ -13,35 +12,6 @@
                 <th scope="col">Date</th>
                 <th scope="col">Semester</th>
                   <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody>
-                <form action="" method="post" >
-                    {% csrf_token %}
-                    {% for examtime in to_take_exam %}
-                    <tr>
-                        <td class="">{{examtime.subject.name}}</td>
-                        <td class="">{{examtime.date}}</td>
-                        <td class="">{{examtime.semester}}</td>
-                        <td class="text-right">
-                            <a href="{% url 'students:student_take_exam' pk=examtime.pk no_ques=0 %}" class="btn btn-primary">Start quiz</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </form>
-            </tbody>
-          </table>
-    </div>
-
-
-    <h1>Upcomming Exams</h1>
-    <div>
-        <table class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col">Subject Name</th>
-                <th scope="col">Date</th>
-                <th scope="col">Semester</th>
               </tr>
             </thead>
             <tbody>
@@ -62,7 +32,7 @@
           </table>
     </div>
 
-    <h1>Taken Exams</h1>
+    <h1>Taken Exam</h1>
     <div>
         <table class="table table-striped">
             <thead>
@@ -86,32 +56,6 @@
                         <td class="text-right">
                             <a href="{% url 'students:view_result' pk=taken.pk %}" class="btn btn-primary">View results</a>
                         </td>
-                    </tr>
-                    {% endfor %}
-                </form>
-            </tbody>
-          </table>
-    </div>
-
-
-    <h1>Past Exams</h1>
-    <div>
-        <table class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col">Subject Name</th>
-                <th scope="col">Date</th>
-                <th scope="col">Semester</th>
-              </tr>
-            </thead>
-            <tbody>
-                <form action="" method="post" >
-                    {% csrf_token %}
-                    {% for examtime in outdated_exam %}
-                    <tr>
-                        <td class="">{{examtime.subject.name}}</td>
-                        <td class="">{{examtime.date}}</td>
-                        <td class="">{{examtime.semester}}</td>
                     </tr>
                     {% endfor %}
                 </form>
