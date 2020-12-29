@@ -149,29 +149,6 @@ def takeExam(request, pk, no_ques):
         messages.success(request, 'Congratulations! You completed the quiz with success!')
         return redirect('students:student_comming_exam')
 
-<<<<<<< HEAD
-
-@method_decorator([login_required, student_required], name='dispatch')
-class ExamResultView(DetailView):
-    model = Takeexam
-    template_name = 'classroom/students/view_result.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        takeexam = self.get_object()
-        mark = 0
-        for question_presentation in takeexam.exam.questionpresentation_set.all():
-            for answerorder in question_presentation.answerorder_set.all():
-                if answerorder.option == answerorder.answerid.answerid and answerorder.answerid.result == True:
-                    mark = mark + 1
-        context['mark'] = mark
-        return context
-
-    def get_queryset(self):
-        return Takeexam.objects.all()
-
-=======
->>>>>>> parent of 3517dc1... Less bug version
 # @method_decorator([login_required, student_required], name='dispatch')
 # class StudentInterestsView(UpdateView):
 #     model = Student
