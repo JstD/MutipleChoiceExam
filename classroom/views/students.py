@@ -192,6 +192,22 @@ def takeSpecificExam(request, pk, eid, no_ques):
         return redirect('students:student_comming_exam')
 
 
+@method_decorator([login_required, student_required], name='dispatch')
+class ExamResultView(DetailView):
+    model = Subject
+    template_name = 'classroom/students/view_result.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        subject = self.get_object()
+        # examtimes = subject.examtime_set.all()
+        # context["examtimes"] = examtimes
+        # context["form"] = ExamtimeAddForm()
+        return context
+
+    def get_queryset(self):
+        return self.request.user.teacher.subjects.all()
+
 # @method_decorator([login_required, student_required], name='dispatch')
 # class StudentInterestsView(UpdateView):
 #     model = Student

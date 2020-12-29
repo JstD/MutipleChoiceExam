@@ -70,7 +70,8 @@
                 <th scope="col">Subject Name</th>
                 <th scope="col">Date took</th>
                 <th scope="col">Semester</th>
-                  <th scope="col"></th>
+                <th scope="col">Exam Code</th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
@@ -81,6 +82,10 @@
                         <td class="">{{taken.exam.examtime.subject.name}}</td>
                         <td class="">{{taken.exam.examtime.date}}</td>
                         <td class="">{{taken.exam.examtime.semester}}</td>
+                        <td class="">{{taken.exam.code}}</td>
+                        <td class="text-right">
+                            <a href="{% url 'students:view_result' pk=taken.pk %}" class="btn btn-primary">View results</a>
+                        </td>
                     </tr>
                     {% endfor %}
                 </form>
