@@ -179,7 +179,7 @@ class ExamListView(ListView):
 
                 total = len(takeexam.exam.questionpresentation_set.all())
 
-                score_based_10 = float(mark/total) *100
+                score_based_10 = float(mark/total) *100 if total > 0 else 0
                 taker = (takeexam, mark, total, score_based_10)
 
                 info.append(taker)
