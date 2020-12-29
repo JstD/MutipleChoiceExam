@@ -31,9 +31,11 @@
 
     <h5>Date: {{examtime.date}} - Semester: {{examtime.semester}}</h5>
 
+    {% if is_main %}
     <div class="text-center my-4">
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">Add Exam</button>
     </div>
+    {% endif %}
 
     <!-- Modal -->
     <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -73,7 +75,9 @@
                     <thead>
                       <tr>
                         <th scope="col">Code</th>
+                        {% if is_main %}
                         <th scope="col">Action</th>
+                        {% endif %}
                       </tr>
                     </thead>
                     <tbody>
@@ -82,7 +86,9 @@
                             {% for exam in exam_list %}
                             <tr>
                                 <td class="col-12"><a href="{% url 'teachers:exam_detail' exam.pk %}">{{exam.code}}</a></td>
+                                {% if is_main %}
                                 <td><button name="btnDelete" value="{{exam.pk}}" class="btn btn-primary" type="submit" style="background-color: red;">Delete</button></td>
+                                {% endif %}
                             </tr>
                             {% endfor %}
                         </form>

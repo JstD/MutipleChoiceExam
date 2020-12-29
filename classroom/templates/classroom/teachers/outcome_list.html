@@ -65,7 +65,9 @@
                 <th scope="col-2">Outcome</th>
                 <th scope="col-8">Content</th>
                 <th scope="col-2">Super Outcome</th>
+                {% if is_main %}
                 <th>Action</th>
+                {% endif %}
               </tr>
             </thead>
             <tbody>
@@ -76,7 +78,9 @@
                         <td class=""><a href="{% url 'teachers:question_list' outcome.pk %}">{{outcome.outcome}}</a></td>
                         <td class="">{{outcome.content}}</td>
                         <td class="">{{outcome.superoutcome}}</td>
+                        {% if is_main %}
                         <td><button name="btnDelete" value="{{outcome.pk}}" class="btn btn-primary" type="submit" style="background-color: red;">Delete</button></td>
+                        {% endif %}
                     </tr>
                     {% endfor %} 
                 </form>         

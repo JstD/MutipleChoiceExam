@@ -45,7 +45,9 @@
               <tr>
                 <th scope="col-2">Question</th>
                 <th scope="col-8">Content</th>
+                {% if is_main %}
                 <th>Action</th>
+                {% endif %}
               </tr>
             </thead>
             <tbody>
@@ -55,8 +57,10 @@
                     <tr>
                         <td class=""><a href="{% url 'teachers:question_detail' question.pk %}">{{question.pk}}</a></td>
                         <td class="">{{question.content.text}}</td>
+                        {% if is_main %}
                         <td><button name="btnDelete" value="{{question.pk}}" class="btn btn-primary" type="submit" style="background-color: red;">Delete</button></td>
-                    </tr>
+                        {% endif %}
+                      </tr>
                     {% endfor %}
                 </form>
             </tbody>
@@ -68,7 +72,9 @@
               <tr>
                 <th scope="col-2">Question</th>
                 <th scope="col-8">Content</th>
+                {% if is_main %}
                 <th>Action</th>
+                {% endif %}
               </tr>
             </thead>
             <tbody>
@@ -78,8 +84,10 @@
                     <tr>
                         <td class=""><a href="{% url 'teachers:question_detail' question.pk %}">{{question.pk}}</a></td>
                         <td class="">{{question.content.text}}</td>
+                        {% if is_main %}
                         <td><button name="btnAdd" value="{{question.pk}}" class="btn btn-primary" type="submit" style="background-color: red;">Add to exam</button></td>
-                    </tr>
+                        {% endif %}
+                      </tr>
                     {% endfor %}
                 </form>
             </tbody>

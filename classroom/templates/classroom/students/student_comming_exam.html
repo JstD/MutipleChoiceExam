@@ -114,6 +114,7 @@
                             <form action="" method="post" >
                                 {% csrf_token %}
                                 {% for examtime in outdated_exam %}
+                                {% if examtime.exam_set.all.0 %}
                                 <tr>
                                     <td class="">{{examtime.subject.name}}</td>
                                     <td class="">{{examtime.date}}</td>
@@ -122,6 +123,7 @@
                                         <a href="{% url 'students:view_past_exam' examtime.exam_set.all.0.pk %}" class="btn btn-primary">View results</a>
                                     </td>
                                 </tr>
+                                {% endif %}
                                 {% endfor %}
                             </form>
                         </tbody>

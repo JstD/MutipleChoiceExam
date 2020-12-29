@@ -144,13 +144,13 @@ class Answerorder(models.Model):
     class Meta:
         # managed = False
         db_table = 'AnswerOrder'
-        unique_together = (('qpresentation', 'answerid'), ('qpresentation', 'option'),)
+        unique_together = (('qpresentation', 'answerid', 'studentid'), ('qpresentation', 'option', 'studentid'),)
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     class_field = models.CharField(max_length=20, blank=True, null=True)
     yearofadmission = models.DecimalField(max_digits=4, decimal_places=0, blank=True, null=True)
-    exams = models.ManyToManyField(Exam, through=Takeexam)
+    # exams = models.ManyToManyField(Exam, through=Takeexam)
 
     class Meta:
         # managed = False

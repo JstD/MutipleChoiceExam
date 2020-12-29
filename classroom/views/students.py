@@ -201,8 +201,9 @@ class ExamResultView(DetailView):
         context['results'] = []
         for question_presentation in takeexam.exam.questionpresentation_set.all():
             for answerorder in question_presentation.answerorder_set.all():
-                if answerorder.option == answerorder.answerid.answerid and answerorder.answerid.result == True:
-                    mark = mark + 1
+                if answerorder.studentid == self.request.user.student:
+                    if answerorder.option == answerorder.answerid.answerid and answerorder.answerid.result == True:
+                        mark = mark + 1
             class Result(object):
                 pass
             result = Result()
@@ -212,7 +213,7 @@ class ExamResultView(DetailView):
             result.answer_b = question_presentation.question.answerpart_set.get(answerid='B') 
             result.answer_c = question_presentation.question.answerpart_set.get(answerid='C') 
             result.answer_d = question_presentation.question.answerpart_set.get(answerid='D') 
-            result.student_choice = question_presentation.answerorder_set.all()[0].option
+            result.student_choice = question_presentation.answerorder_set.filter(studentid=self.request.user.student)[0].option
             context['results'].append(result)
             
         # context['question_presentations'] = takeexam.exam.questionpresentation_set.all()
