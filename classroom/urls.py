@@ -38,6 +38,7 @@ urlpatterns = [
         path('outcome/<pk>/questions/delete', teachers.delete_question, name='delete_question'),
         path('question/<pk>/', teachers.QuestionDetailView.as_view(), name='question_detail'),
         path('question/<pk>/update', teachers.update_question, name='update_question'),
+        # path('totalResult', teachers.chart, name='draw_chart'),
         # path('quiz/add/', teachers.QuizCreateView.as_view(), name='quiz_add'),
         # path('quiz/<int:pk>/', teachers.QuizUpdateView.as_view(), name='quiz_change'),
         # path('quiz/<int:pk>/delete/', teachers.QuizDeleteView.as_view(), name='quiz_delete'),

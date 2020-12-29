@@ -88,5 +88,37 @@
         $('[data-toggle="tooltip"]').tooltip();
       })
     </script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+    <script>
+    window.onload = function () {
+    
+    var chart = new CanvasJS.Chart("chartContainer", {
+        animationEnabled: true,
+        theme: "light2",
+        title:{
+            text: "Number of students per mark point"
+        },
+        data: [{        
+            type: "line",
+                indexLabelFontSize: 16,
+            dataPoints: [
+                { y: 10 },
+                { y: 5},
+                { y: 30 },
+                { y: 80 },
+                { y: 90 },
+                { y: 100 },
+                { y: 130 },
+                { y: 70 },
+                { y: 40 },
+                { y: 10 },
+                { y: 5 }
+            ]
+        }]
+    });
+    chart.render();
+    }
+    </script>
   </body>
 </html>
