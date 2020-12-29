@@ -10,7 +10,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import *
 from django.http import *
 from datetime import *
-from json import dumps 
+from json import dumps
 
 from ..decorators import teacher_required
 from ..forms import *
@@ -30,6 +30,7 @@ class TeacherSignUpView(CreateView):
         user = form.save()
         login(self.request, user)
         return redirect('teachers:subject_list')
+
 
 @method_decorator([login_required, teacher_required], name='dispatch')
 class SubjectListView(ListView):
@@ -84,7 +85,8 @@ class ExamtimeListView(ListView):
         context = super().get_context_data(**kwargs)
         context["subject"] = Subject.objects.get(pk=self.kwargs['pk'])
         context["form"] = ExamtimeAddForm()
-        if self.request.user.teacher.pk == Teacher.objects.get(teach__role='Main', teach__subject=context['subject']).pk:
+        if self.request.user.teacher.pk == Teacher.objects.get(teach__role='Main',
+                                                               teach__subject=context['subject']).pk:
             context["is_main"] = True
         return context
 
@@ -146,40 +148,37 @@ class ExamListView(ListView):
         final_res = None
         context = super().get_context_data(**kwargs)
         context["examtime"] = get_object_or_404(Examtime, pk=self.kwargs['pk'])
-        #Get student who take this examtime
+        # Get student who take this examtime
         # Exams = self.queryset
         exam_set = Examtime.objects.get(pk=self.kwargs['pk']).exam_set.all()
         for exam in exam_set:
             taken_exam.append(Takeexam.objects.filter(exam=exam))
 
         if len(taken_exam) > 1:
-            for i in range(len(taken_exam)-1):
-                final_res = taken_exam[i] | taken_exam[i+1]
+            for i in range(len(taken_exam) - 1):
+                final_res = taken_exam[i] | taken_exam[i + 1]
         elif len(taken_exam) == 1:
             final_res = taken_exam[0]
-
         info = []
         if final_res:
             for takeexam in final_res:
                 mark = 0
-                print(len(takeexam.exam.questionpresentation_set.all()))
                 for question_presentation in takeexam.exam.questionpresentation_set.all():
                     for answerorder in question_presentation.answerorder_set.all():
-                        if answerorder.option == answerorder.answerid.answerid and answerorder.answerid.result == True:
+                        if answerorder.option == answerorder.answerid.answerid and answerorder.answerid.result == True \
+                                and answerorder.studentid == takeexam.student:
                             mark = mark + 1
-
-
                 total = len(takeexam.exam.questionpresentation_set.all())
 
-                score_based_10 = float(mark/total) *100 if total > 0 else 0
+                score_based_10 = float(mark / total) * 100 if total > 0 else 0
                 taker = (takeexam, mark, total, score_based_10)
 
                 info.append(taker)
 
-        # context["taker"] = final_res
         context["taker"] = info
         context["form"] = ExamAddForm()
-        if self.request.user.teacher.pk == Teacher.objects.get(teach__role='Main', teach__subject=context['examtime'].subject).pk:
+        if self.request.user.teacher.pk == Teacher.objects.get(teach__role='Main',
+                                                               teach__subject=context['examtime'].subject).pk:
             context["is_main"] = True
         return context
 
@@ -211,7 +210,6 @@ def add_exam(request, pk):
         form = ExamtimeAddForm()
 
     return redirect('teachers:examtime_list', examtime.pk)
-    # return render(request, 'classroom/teachers/question_add_form.html', {'quiz': quiz, 'form': form})
 
 
 @login_required
@@ -229,13 +227,12 @@ def delete_exam(request, pk):
         return redirect('teachers:exam_list', examtime.pk)
 
     return redirect('teachers:exam_list', examtime.pk)
-    # return render(request, 'classroom/teachers/question_add_form.html', {'quiz': quiz, 'form': form})
 
 
 @method_decorator([login_required, teacher_required], name='dispatch')
 class AddQuestionView(ListView):
     model = Question
-    ordering = ('modify_date', )
+    ordering = ('modify_date',)
     context_object_name = 'Questions'
 
     def get_queryset(self):
@@ -248,20 +245,20 @@ class AddQuestionView(ListView):
         answer2 = form['answer2'].save(commit=False)
         answer3 = form['answer3'].save(commit=False)
         answer4 = form['answer4'].save(commit=False)
-        #answer5 = form['answer5'].save(commit=False)
+        # answer5 = form['answer5'].save(commit=False)
         question.teacher = self.request.user
         question.modify_date = date.today()
         answer1.question = question
         answer2.question = question
         answer3.question = question
         answer4.question = question
-        #answer5.question = question
+        # answer5.question = question
         question.save()
         answer1.save()
         answer2.save()
         answer3.save()
         answer4.save()
-        #answer1.save()
+        # answer1.save()
         messages.success(self.request, "The question was added successfully!")
         return redirect('teacher:subject_detail', question.pk)
 
@@ -269,8 +266,6 @@ class AddQuestionView(ListView):
 @method_decorator([login_required, teacher_required], name='dispatch')
 class ExamDetailView(DetailView):
     model = Exam
-    # context_object_name = 'quiz'
-    # template_name = 'classroom/teachers/quiz_results.html'
     template_name = 'classroom/teachers/exam_detail.html'
 
     def get_context_data(self, **kwargs):
@@ -299,7 +294,7 @@ class ExamDetailView(DetailView):
             manager_first_name = exam.manager.user.first_name
 
         context[
-            'manager_name'] =  manager_middle_name + ' ' + manager_first_name + ' ' + manager_last_name
+            'manager_name'] = manager_middle_name + ' ' + manager_first_name + ' ' + manager_last_name
 
         if exam.mainteacher.user.last_name is None:
             main_teacher_last_name = ""
@@ -317,8 +312,6 @@ class ExamDetailView(DetailView):
         context[
             'main_teacher_name'] = main_teacher_first_name + ' ' + main_teacher_middle_name + ' ' + main_teacher_last_name
 
-        # context['main_teacher_name'] = exam.mainteacher.user.last_name + ' ' + exam.mainteacher.user.middle_name + ' ' + exam.mainteacher.user.first_name
-        # context['manager_name'] = exam.manager.user.last_name + ' ' + exam.manager.user.middle_name + ' ' + exam.manager.user.first_name
         return context
 
     def get_queryset(self):
@@ -350,11 +343,10 @@ def check_exam(request, pk):
 
     return redirect('teachers:exam_detail', exam.pk)
 
+
 @method_decorator([login_required, teacher_required], name='dispatch')
 class OutcomeListView(ListView):
     model = Outcome
-    # ordering = ('name', )
-    # context_object_name = 'quizzes'
     template_name = 'classroom/teachers/outcome_list.html'
 
     def get_context_data(self, **kwargs):
@@ -407,30 +399,25 @@ def delete_outcome(request, pk):
 @method_decorator([login_required, teacher_required], name='dispatch')
 class QuestionListView(ListView):
     model = Question
-    # ordering = ('name', )
-    # context_object_name = 'questions'
     template_name = 'classroom/teachers/question_list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["outcome"] = get_object_or_404(Outcome, pk=self.kwargs['pk'])
-        # context["form"] = QuestionCreateForm()
         return context
 
     def get_queryset(self):
-        #queryset = Outcome.objects.get(pk=self.kwargs['pk']).question_set.all()
         queryset = Outcome.objects.get(pk=self.kwargs['pk']).question_set.all()
-        # ans_set = Answerpart.objects.all()
-        # queryset = {'ques_set': ques_set, 'ans_set': ans_set}
         return queryset
-        #return queryset
+
 
 @login_required
 @teacher_required
 def create_question_form(request, pk):
     outcome = get_object_or_404(Outcome, pk=pk)
     form = QuestionCreateForm()
-    return render(request, 'classroom/teachers/question_create_form.html', {'outcome':outcome, 'form':form})
+    return render(request, 'classroom/teachers/question_create_form.html', {'outcome': outcome, 'form': form})
+
 
 @login_required
 @teacher_required
@@ -450,12 +437,17 @@ def create_question(request, pk):
             # Create quesion
             teacher = request.user.teacher
             modify_date = datetime.now().strftime('%Y-%m-%d')
-            question = Question.objects.create(teacher=teacher, modify_date=modify_date, outcome=outcome, content=question_content)
+            question = Question.objects.create(teacher=teacher, modify_date=modify_date, outcome=outcome,
+                                               content=question_content)
             # Create answerpart
-            Answerpart.objects.create(question=question, answerid='A', result=form.cleaned_data['answer_result_1'], content=answer_content_1)
-            Answerpart.objects.create(question=question, answerid='B', result=form.cleaned_data['answer_result_2'], content=answer_content_2)
-            Answerpart.objects.create(question=question, answerid='C', result=form.cleaned_data['answer_result_3'], content=answer_content_3)
-            Answerpart.objects.create(question=question, answerid='D', result=form.cleaned_data['answer_result_4'], content=answer_content_4)
+            Answerpart.objects.create(question=question, answerid='A', result=form.cleaned_data['answer_result_1'],
+                                      content=answer_content_1)
+            Answerpart.objects.create(question=question, answerid='B', result=form.cleaned_data['answer_result_2'],
+                                      content=answer_content_2)
+            Answerpart.objects.create(question=question, answerid='C', result=form.cleaned_data['answer_result_3'],
+                                      content=answer_content_3)
+            Answerpart.objects.create(question=question, answerid='D', result=form.cleaned_data['answer_result_4'],
+                                      content=answer_content_4)
             return redirect('teachers:question_list', outcome.pk)
     else:
         form = QuestionCreateForm()
@@ -479,16 +471,14 @@ def delete_question(request, pk):
 @method_decorator([login_required, teacher_required], name='dispatch')
 class QuestionDetailView(DetailView):
     model = Question
-    # context_object_name = 'quiz'
-    # template_name = 'classroom/teachers/quiz_results.html'
     template_name = 'classroom/teachers/question_detail.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         question = self.get_object()
-        context['answer_a'] = question.answerpart_set.get(answerid='A') 
-        context['answer_b'] = question.answerpart_set.get(answerid='B') 
-        context['answer_c'] = question.answerpart_set.get(answerid='C') 
+        context['answer_a'] = question.answerpart_set.get(answerid='A')
+        context['answer_b'] = question.answerpart_set.get(answerid='B')
+        context['answer_c'] = question.answerpart_set.get(answerid='C')
         context['answer_d'] = question.answerpart_set.get(answerid='D')
         context['form'] = QuestionUpdateForm(initial={
             'question_text': question.content.text,
@@ -516,40 +506,35 @@ class QuestionDetailView(DetailView):
 
         context[
             'teacher_name'] = teacher_first_name + ' ' + teacher_middle_name + ' ' + teacher_last_name
-        # context['teacher_name'] = question.teacher.user.last_name + ' ' + question.teacher.user.middle_name + ' ' + question.teacher.user.first_name
         return context
 
     def get_queryset(self):
         return Question.objects.all()
 
+
 @method_decorator([login_required, teacher_required], name='dispatch')
 class QuestionBankView(ListView):
     model = Question
-    # ordering = ('name', )
     context_object_name = 'questions'
     template_name = 'classroom/teachers/question_bank.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["exam"] = get_object_or_404(Exam, pk=self.kwargs['pk'])
-        if self.request.user.teacher.pk == Teacher.objects.get(teach__role='Main', teach__subject=context['exam'].examtime.subject).pk:
+        if self.request.user.teacher.pk == Teacher.objects.get(teach__role='Main',
+                                                               teach__subject=context['exam'].examtime.subject).pk:
             context["is_main"] = True
-        # context["form"] = QuestionCreateForm()
         return context
 
     def get_queryset(self):
-        #queryset = Outcome.objects.get(pk=self.kwargs['pk']).question_set.all()
         exam = get_object_or_404(Exam, pk=self.kwargs['pk'])
         subject = exam.examtime.subject
         subject_outcome = Outcome.objects.filter(subject=subject)
-        # print(exam)
-        # queryset = Question.objects.filter(questionpresentation__exam=exam)
         question_bank = Question.objects.filter(outcome__in=subject_outcome)
         question_in_exam = Question.objects.filter(questionpresentation__exam=exam)
         queryset = {'question_bank': question_bank, 'question_in_exam': question_in_exam}
-        # ans_set = Answerpart.objects.all()
-        # queryset = {'ques_set': ques_set, 'ans_set': ans_set}
         return queryset
+
 
 @login_required
 @teacher_required
@@ -571,6 +556,7 @@ def addQuestionToExam(request, pk):
 
     return redirect('teachers:question_bank', exam.pk)
 
+
 @login_required
 @teacher_required
 def deleteQuestionFromExam(request, pk):
@@ -582,6 +568,7 @@ def deleteQuestionFromExam(request, pk):
         Questionpresentation.objects.filter(exam=exam, question=question).latest('number').delete()
 
     return redirect('teachers:question_bank', exam.pk)
+
 
 @login_required
 @teacher_required
@@ -625,203 +612,3 @@ def update_question(request, pk):
         form = QuestionCreateForm()
 
     return redirect('teachers:question_detail', question.pk)
-
-
-# @login_required
-# @teacher_required
-# def delete_examtime(request, pk):
-#     # By filtering the quiz by the url keyword argument `pk` and
-#     # by the owner, which is the logged in user, we are protecting
-#     # this view at the object-level. Meaning only the owner of
-#     # quiz will be able to add questions to it.
-#     subject = get_object_or_404(Subject, pk=pk)
-
-#     if request.method == 'POST':
-#         examtime_pk = request.POST["btnDelete"]
-#         subject.examtime_set.get(pk=examtime_pk).delete()
-#         return redirect('teachers:examtime_list', subject.pk)
-
-#     return redirect('teachers:examtime_list', subject.pk)
-#     # return render(request, 'classroom/teachers/question_add_form.html', {'quiz': quiz, 'form': form})
-
-# @method_decorator([login_required, teacher_required], name='dispatch')
-# class QuizListView(ListView):
-#     model = Quiz
-#     ordering = ('name', )
-#     context_object_name = 'quizzes'
-#     template_name = 'classroom/teachers/quiz_change_list.html'
-
-#     def get_queryset(self):
-#         queryset = self.request.user.quizzes \
-#             .select_related('subject') \
-#             .annotate(questions_count=Count('questions', distinct=True)) \
-#             .annotate(taken_count=Count('taken_quizzes', distinct=True))
-#         return queryset
-
-
-# @method_decorator([login_required, teacher_required], name='dispatch')
-# class QuizCreateView(CreateView):
-#     model = Quiz
-#     fields = ('name', 'subject', )
-#     template_name = 'classroom/teachers/quiz_add_form.html'
-
-#     def form_valid(self, form):
-#         quiz = form.save(commit=False)
-#         quiz.owner = self.request.user
-#         quiz.save()
-#         messages.success(self.request, 'The quiz was created with success! Go ahead and add some questions now.')
-#         return redirect('teachers:quiz_change', quiz.pk)
-
-
-# @method_decorator([login_required, teacher_required], name='dispatch')
-# class QuizUpdateView(UpdateView):
-#     model = Quiz
-#     fields = ('name', 'subject', )
-#     context_object_name = 'quiz'
-#     template_name = 'classroom/teachers/quiz_change_form.html'
-
-#     def get_context_data(self, **kwargs):
-#         kwargs['questions'] = self.get_object().questions.annotate(answers_count=Count('answers'))
-#         return super().get_context_data(**kwargs)
-
-#     def get_queryset(self):
-#         '''
-#         This method is an implicit object-level permission management
-#         This view will only match the ids of existing quizzes that belongs
-#         to the logged in user.
-#         '''
-#         return self.request.user.quizzes.all()
-
-#     def get_success_url(self):
-#         return reverse('teachers:quiz_change', kwargs={'pk': self.object.pk})
-
-
-# @method_decorator([login_required, teacher_required], name='dispatch')
-# class QuizDeleteView(DeleteView):
-#     model = Quiz
-#     context_object_name = 'quiz'
-#     template_name = 'classroom/teachers/quiz_delete_confirm.html'
-#     success_url = reverse_lazy('teachers:quiz_change_list')
-
-#     def delete(self, request, *args, **kwargs):
-#         quiz = self.get_object()
-#         messages.success(request, 'The quiz %s was deleted with success!' % quiz.name)
-#         return super().delete(request, *args, **kwargs)
-
-#     def get_queryset(self):
-#         return self.request.user.quizzes.all()
-
-
-# @method_decorator([login_required, teacher_required], name='dispatch')
-# class QuizResultsView(DetailView):
-#     model = Quiz
-#     context_object_name = 'quiz'
-#     template_name = 'classroom/teachers/quiz_results.html'
-
-#     def get_context_data(self, **kwargs):
-#         quiz = self.get_object()
-#         taken_quizzes = quiz.taken_quizzes.select_related('student__user').order_by('-date')
-#         total_taken_quizzes = taken_quizzes.count()
-#         quiz_score = quiz.taken_quizzes.aggregate(average_score=Avg('score'))
-#         extra_context = {
-#             'taken_quizzes': taken_quizzes,
-#             'total_taken_quizzes': total_taken_quizzes,
-#             'quiz_score': quiz_score
-#         }
-#         kwargs.update(extra_context)
-#         return super().get_context_data(**kwargs)
-
-#     def get_queryset(self):
-#         return self.request.user.quizzes.all()
-
-
-# @login_required
-# @teacher_required
-# def question_add(request, pk):
-#     # By filtering the quiz by the url keyword argument `pk` and
-#     # by the owner, which is the logged in user, we are protecting
-#     # this view at the object-level. Meaning only the owner of
-#     # quiz will be able to add questions to it.
-#     quiz = get_object_or_404(Quiz, pk=pk, owner=request.user)
-
-#     if request.method == 'POST':
-#         form = QuestionForm(request.POST)
-#         if form.is_valid():
-#             question = form.save(commit=False)
-#             question.quiz = quiz
-#             question.save()
-#             messages.success(request, 'You may now add answers/options to the question.')
-#             return redirect('teachers:question_change', quiz.pk, question.pk)
-#     else:
-#         form = QuestionForm()
-
-#     return render(request, 'classroom/teachers/question_add_form.html', {'quiz': quiz, 'form': form})
-
-
-# @login_required
-# @teacher_required
-# def question_change(request, quiz_pk, question_pk):
-#     # Simlar to the `question_add` view, this view is also managing
-#     # the permissions at object-level. By querying both `quiz` and
-#     # `question` we are making sure only the owner of the quiz can
-#     # change its details and also only questions that belongs to this
-#     # specific quiz can be changed via this url (in cases where the
-#     # user might have forged/player with the url params.
-#     quiz = get_object_or_404(Quiz, pk=quiz_pk, owner=request.user)
-#     question = get_object_or_404(Question, pk=question_pk, quiz=quiz)
-
-#     AnswerFormSet = inlineformset_factory(
-#         Question,  # parent model
-#         Answer,  # base model
-#         formset=BaseAnswerInlineFormSet,
-#         fields=('text', 'is_correct'),
-#         min_num=2,
-#         validate_min=True,
-#         max_num=10,
-#         validate_max=True
-#     )
-
-#     if request.method == 'POST':
-#         form = QuestionForm(request.POST, instance=question)
-#         formset = AnswerFormSet(request.POST, instance=question)
-#         if form.is_valid() and formset.is_valid():
-#             with transaction.atomic():
-#                 form.save()
-#                 formset.save()
-#             messages.success(request, 'Question and answers saved with success!')
-#             return redirect('teachers:quiz_change', quiz.pk)
-#     else:
-#         form = QuestionForm(instance=question)
-#         formset = AnswerFormSet(instance=question)
-
-#     return render(request, 'classroom/teachers/question_change_form.html', {
-#         'quiz': quiz,
-#         'question': question,
-#         'form': form,
-#         'formset': formset
-#     })
-
-
-# @method_decorator([login_required, teacher_required], name='dispatch')
-# class QuestionDeleteView(DeleteView):
-#     model = Question
-#     context_object_name = 'question'
-#     template_name = 'classroom/teachers/question_delete_confirm.html'
-#     pk_url_kwarg = 'question_pk'
-
-#     def get_context_data(self, **kwargs):
-#         question = self.get_object()
-#         kwargs['quiz'] = question.quiz
-#         return super().get_context_data(**kwargs)
-
-#     def delete(self, request, *args, **kwargs):
-#         question = self.get_object()
-#         messages.success(request, 'The question %s was deleted with success!' % question.text)
-#         return super().delete(request, *args, **kwargs)
-
-#     def get_queryset(self):
-#         return Question.objects.filter(quiz__owner=self.request.user)
-
-#     def get_success_url(self):
-#         question = self.get_object()
-#         return reverse('teachers:quiz_change', kwargs={'pk': question.quiz_id})

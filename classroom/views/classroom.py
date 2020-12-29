@@ -12,8 +12,6 @@ def home(request):
     if request.user.is_authenticated:
         if request.user.is_teacher:
             return redirect(reverse('teachers:subject_list'))
-            # return HttpResponse("Student " + request.user.username + "login succesfully")
         else:
             return redirect(reverse('students:student_comming_exam'))
-            # return HttpResponse("Student" + request.user.username + "login succesfully")
     return render(request, 'classroom/home.html')
