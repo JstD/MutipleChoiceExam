@@ -118,6 +118,9 @@
                                     <td class="">{{examtime.subject.name}}</td>
                                     <td class="">{{examtime.date}}</td>
                                     <td class="">{{examtime.semester}}</td>
+                                    <td class="text-right">
+                                        <a href="{% url 'students:view_past_exam' examtime.exam_set.all.0.pk %}" class="btn btn-primary">View results</a>
+                                    </td>
                                 </tr>
                                 {% endfor %}
                             </form>

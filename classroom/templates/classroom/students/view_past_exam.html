@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+{% for result in results %}
+    <div class="mt-3">
+        <div style="font-size: 1em;">
+            <span class="font-weight-bold">Question {{result.order}}: </span> {{result.question.content.text}}
+        </div>
+    
+        <div class="row" style="font-size: 1em;">
+            <div class="col-10">
+                <span class="font-weight-bold">A. </span> {{result.answer_a.content.text}}
+            </div>
+            <div class="col-2 text-right">
+                <span class="font-weight-bold">{{result.answer_a.result}}</span>
+            </div>
+        </div>
+    
+        <div class="row" style="font-size: 1em;">
+            <div class="col-10">
+                <span class="font-weight-bold">B. </span> {{result.answer_b.content.text}}
+            </div>
+            <div class="col-2 text-right">
+                <span class="font-weight-bold">{{result.answer_b.result}}</span>
+            </div>
+        </div>
+    
+        <div class="row" style="font-size: 1em;">
+            <div class="col-10">
+                <span class="font-weight-bold">C. </span> {{result.answer_c.content.text}}
+            </div>
+            <div class="col-2 text-right">
+                <span class="font-weight-bold">{{result.answer_c.result}}</span>
+            </div>
+        </div>
+    
+        <div class="row" style="font-size: 1em;">
+            <div class="col-10">
+                <span class="font-weight-bold">D. </span> {{result.answer_d.content.text}}
+            </div>
+            <div class="col-2 text-right">
+                <span class="font-weight-bold">{{result.answer_d.result}}</span>
+            </div>
+        </div>
+    </div>
+
+{% endfor %}
+{% endblock %}
