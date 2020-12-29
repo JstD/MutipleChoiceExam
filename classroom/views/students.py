@@ -37,9 +37,14 @@ class StudentSignUpView(CreateView):
 def studentExam(request):
     today = date.today()
     upcomming_exam = Examtime.objects.all().filter(date__gt=today)
-    to_take_exam = Examtime.objects.all().filter(date=today)
+    to_take_exam = Examtime.objects.all().filter(date__gt=today)
     outdated_exam = Examtime.objects.all().filter(date__lt=today)
     taken_exam = request.user.student.takeexam_set.all()
+
+    for exam in taken_exam:
+        to_take_exam = to_take_exam.exclude(pk=exam.exam.examtime.pk)
+
+
 
     students_exam = {'upcomming_exam': upcomming_exam,
                      'taken_exam': taken_exam,
@@ -48,18 +53,15 @@ def studentExam(request):
                      }
     return render(request, 'classroom/students/student_comming_exam.html', students_exam)
 
+
 @login_required
 @student_required
 def takeExam(request, pk, no_ques):
-    print("take init")
     no_ques = int(no_ques)
-    print(pk)
     examtime = get_object_or_404(Examtime, pk=pk)
     exam_set = Exam.objects.filter(examtime=examtime)
     exam_id = randint(0, len(exam_set) - 1)
-    print(exam_id)
     exam_code = exam_set[exam_id].code
-    print(exam_code)
     chosen_exam = Exam.objects.filter(examtime=examtime).get(code=exam_code)
 
     ques_pres = Questionpresentation.objects.filter(exam=chosen_exam)
@@ -122,16 +124,11 @@ def takeExam(request, pk, no_ques):
 @login_required
 @student_required
 def takeSpecificExam(request, pk, eid, no_ques):
-    print("take 1")
     no_ques = int(no_ques)
-    print(pk)
     examtime = get_object_or_404(Examtime, pk=pk)
     exam_set = Exam.objects.filter(examtime=examtime)
-    print(eid)
     exam_id = int(eid)
     exam_code = exam_set[exam_id].code
-    print(exam_id)
-    print(exam_code)
     chosen_exam = Exam.objects.filter(examtime=examtime).get(code=exam_code)
 
     ques_pres = Questionpresentation.objects.filter(exam=chosen_exam)
@@ -299,4 +296,3 @@ class ExamResultView(DetailView):
 #         'form': form,
 #         'progress': progress
 #     })
-
