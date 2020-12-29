@@ -31,7 +31,7 @@
                                 <td class="">{{examtime.date}}</td>
                                 <td class="">{{examtime.semester}}</td>
                                 <td class="text-right">
-                                    <a href="{% url 'students:student_take_exam' pk=examtime.pk no_ques=0 %}" class="btn btn-primary">Start quiz</a>
+                                    <a href="{% url 'students:student_take_exam' pk=examtime.pk no_ques=0 %}" class="btn btn-primary">Take exam</a>
                                 </td>
                             </tr>
                             {% endfor %}

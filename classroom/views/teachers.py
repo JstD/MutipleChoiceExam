@@ -152,32 +152,22 @@ class ExamListView(ListView):
         for exam in exam_set:
             taken_exam.append(Takeexam.objects.filter(exam=exam))
 
-        for i in range(len(taken_exam)-1):
-            final_res = taken_exam[i] | taken_exam[i+1]
+        if len(taken_exam) > 1:
+            for i in range(len(taken_exam)-1):
+                final_res = taken_exam[i] | taken_exam[i+1]
+        elif len(taken_exam) == 1:
+            final_res = taken_exam[0]
 
         info = []
         if final_res:
             for takeexam in final_res:
                 mark = 0
-                # print(len(takeexam.exam.questionpresentation_set.all()))
+                print(len(takeexam.exam.questionpresentation_set.all()))
                 for question_presentation in takeexam.exam.questionpresentation_set.all():
                     for answerorder in question_presentation.answerorder_set.all():
                         if answerorder.option == answerorder.answerid.answerid and answerorder.answerid.result == True:
                             mark = mark + 1
 
-                    # class Result(object):
-                    #     pass
-                    #
-                    # question_list = []
-                    # result = Result()
-                    # result.order = question_presentation.number
-                    # result.question = question_presentation.question
-                    # # result.answer_a = question_presentation.question.answerpart_set.get(answerid='A')
-                    # # result.answer_b = question_presentation.question.answerpart_set.get(answerid='B')
-                    # # result.answer_c = question_presentation.question.answerpart_set.get(answerid='C')
-                    # # result.answer_d = question_presentation.question.answerpart_set.get(answerid='D')
-                    # result.student_choice = question_presentation.answerorder_set.all()[0].option
-                    # question_list.append(result)
 
                 total = len(takeexam.exam.questionpresentation_set.all())
 
@@ -297,17 +287,19 @@ class ExamDetailView(DetailView):
             manager_last_name = ""
         else:
             manager_last_name = exam.manager.user.last_name
+
         if exam.manager.user.middle_name is None:
             manager_middle_name = ""
         else:
             manager_middle_name = exam.manager.user.middle_name
+
         if exam.manager.user.first_name is None:
             manager_first_name = ""
         else:
-            manager_first_name = exam.manager.user.last_name
+            manager_first_name = exam.manager.user.first_name
 
         context[
-            'manager_name'] = manager_last_name + ' ' + manager_middle_name + ' ' + manager_first_name
+            'manager_name'] =  manager_middle_name + ' ' + manager_first_name + ' ' + manager_last_name
 
         if exam.mainteacher.user.last_name is None:
             main_teacher_last_name = ""
@@ -320,10 +312,10 @@ class ExamDetailView(DetailView):
         if exam.mainteacher.user.first_name is None:
             main_teacher_first_name = ""
         else:
-            main_teacher_first_name = exam.mainteacher.user.last_name
+            main_teacher_first_name = exam.mainteacher.user.first_name
 
         context[
-            'main_teacher_name'] = main_teacher_last_name + ' ' + main_teacher_middle_name + ' ' + main_teacher_first_name
+            'main_teacher_name'] = main_teacher_first_name + ' ' + main_teacher_middle_name + ' ' + main_teacher_last_name
 
         # context['main_teacher_name'] = exam.mainteacher.user.last_name + ' ' + exam.mainteacher.user.middle_name + ' ' + exam.mainteacher.user.first_name
         # context['manager_name'] = exam.manager.user.last_name + ' ' + exam.manager.user.middle_name + ' ' + exam.manager.user.first_name
@@ -520,10 +512,10 @@ class QuestionDetailView(DetailView):
         if question.teacher.user.first_name is None:
             teacher_first_name = ""
         else:
-            teacher_first_name = question.teacher.user.last_name
+            teacher_first_name = question.teacher.user.first_name
 
         context[
-            'teacher_name'] = teacher_last_name + ' ' + teacher_middle_name + ' ' + teacher_first_name
+            'teacher_name'] = teacher_first_name + ' ' + teacher_middle_name + ' ' + teacher_last_name
         # context['teacher_name'] = question.teacher.user.last_name + ' ' + question.teacher.user.middle_name + ' ' + question.teacher.user.first_name
         return context
 
