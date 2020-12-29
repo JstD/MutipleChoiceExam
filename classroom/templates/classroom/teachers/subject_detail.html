@@ -14,13 +14,23 @@
 
 {% block content %}
 <div class="container-fulid">
-    <div>{{ subject.aim }}</div>
+    <h4>Aim: {{ subject.aim }}</h4>
 
-    <div class="d-flex my-4">
-        <div class="mx-1"><a href="{% url 'teachers:examtime_list' subject.pk %}">Exam times</a></div>
+<!--    <div class="d-flex my-4">-->
+        <div>
+            <a href="{% url 'teachers:examtime_list' subject.pk %}" class="btn btn-outline-primary btn-lg btn-block" role="button" aria-pressed="true">
+                Manage exam times
+            </a>
+        </div>
+
         <div class="mx-1 border-right border border-dark"></div>
-        <div class="mx-1"><a href="{% url 'teachers:outcome_list' subject.pk %}">Question bank</a></div>
-    </div>
+        <div>
+            <a href="{% url 'teachers:outcome_list' subject.pk %}" class="btn btn-outline-primary btn-lg btn-block" role="button" aria-pressed="true">
+                Manage question bank
+            </a>
+        </div>
+
+<!--    </div>-->
 
 </div>
 {% endblock %}
