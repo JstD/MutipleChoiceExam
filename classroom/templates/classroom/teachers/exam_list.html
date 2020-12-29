@@ -23,7 +23,7 @@
 {% endblock %}
 
 {% block header %}
-    Exam List
+    Exam List Manager
 {% endblock %}
 
 {% block content %}
@@ -34,7 +34,7 @@
     <div class="text-center my-4">
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">Add Exam</button>
     </div>
-    
+
     <!-- Modal -->
     <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -59,59 +59,74 @@
         </div>
     </div>
 
-    <div>
-        <table class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col">Code</th>
-                <th scope="col">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-                <form action="{% url 'teachers:delete_exam' examtime.pk %}" method="post">
-                    {% csrf_token %}
-                    {% for exam in exam_list %}
-                    <tr>
-                        <td class="col-12"><a href="{% url 'teachers:exam_detail' exam.pk %}">{{exam.code}}</a></td>
-                        <td><button name="btnDelete" value="{{exam.pk}}" class="btn btn-primary" type="submit" style="background-color: red;">Delete</button></td>
-                    </tr>
-                    {% endfor %} 
-                </form>         
-            </tbody>
-          </table>
-    </div>
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active" id="manage-exam-tab" data-toggle="tab" href="#nav-manage-exam" role="tab" aria-controls="nav-manage-exam" aria-selected="true">Manage exam</a>
+            <a class="nav-item nav-link" id="participator-info-tab" data-toggle="tab" href="#nav-participator-info" role="tab" aria-controls="av-participator-info" aria-selected="false">Participator Info</a>
+        </div>
+    </nav>
 
-    <div>
-        <table class="table table-striped">
-            <thead>
-              <tr>
-                    <th scope="col">Student id</th>
-                    <th scope="col">First name</th>
-                    <th scope="col">Last name</th>
-                  <th scope="col">Year of admission</th>
-                  <th scope="col">Score</th>
-                  <th scope="col">Score based 10</th>
-              </tr>
-            </thead>
-            <tbody>
-                <form action="" method="post">
-                    {% csrf_token %}
-                    {% for taker in taker %}
-                    <tr>
-                        <td class=""><a href="}">{{taker.0.student.pk}}</a></td>
-                        <td class="">{{taker.0.student.user.first_name}}</td>
-                        <td class="">{{taker.0.student.user.last_name}}</td>
-                        <td class="">{{taker.0.student.user.yearofadmission}}</td>
-                        <td class="">{{taker.1}}/{{taker.2}}</td>
-                        <td class="">{{taker.3}}</td>
-<!--                        <td><button name="btnDelete" value="{{exam.pk}}" class="btn btn-primary" type="submit" style="background-color: red;">Delete</button></td>-->
-                    </tr>
-                    {% endfor %}
-                </form>
-            </tbody>
-          </table>
-    </div>
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-manage-exam" role="tabpanel" aria-labelledby="manage-exam-tab">
+            <div>
+                <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col">Code</th>
+                        <th scope="col">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <form action="{% url 'teachers:delete_exam' examtime.pk %}" method="post">
+                            {% csrf_token %}
+                            {% for exam in exam_list %}
+                            <tr>
+                                <td class="col-12"><a href="{% url 'teachers:exam_detail' exam.pk %}">{{exam.code}}</a></td>
+                                <td><button name="btnDelete" value="{{exam.pk}}" class="btn btn-primary" type="submit" style="background-color: red;">Delete</button></td>
+                            </tr>
+                            {% endfor %}
+                        </form>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
 
+        <div class="tab-pane fade" id="nav-participator-info" role="tabpanel" aria-labelledby="participator-info-tab">
+            <h1 style="text-align:center">
+                Participator info
+            </h1>
+            <div>
+                <table class="table table-striped">
+                    <thead>
+                      <tr>
+                            <th scope="col">Student id</th>
+                            <th scope="col">First name</th>
+                            <th scope="col">Last name</th>
+                          <th scope="col">Year of admission</th>
+                          <th scope="col">Score</th>
+                          <th scope="col">Score based 10</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            {% for taker in taker %}
+                            <tr>
+                                <td class=""><a href="}">{{taker.0.student.pk}}</a></td>
+                                <td class="">{{taker.0.student.user.first_name}}</td>
+                                <td class="">{{taker.0.student.user.last_name}}</td>
+                                <td class="">{{taker.0.student.user.yearofadmission}}</td>
+                                <td class="">{{taker.1}}/{{taker.2}}</td>
+                                <td class="">{{taker.3}}</td>
+        <!--                        <td><button name="btnDelete" value="{{exam.pk}}" class="btn btn-primary" type="submit" style="background-color: red;">Delete</button></td>-->
+                            </tr>
+                            {% endfor %}
+                        </form>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
 
 
 </div>
