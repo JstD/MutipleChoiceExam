@@ -84,6 +84,8 @@ class ExamtimeListView(ListView):
         context = super().get_context_data(**kwargs)
         context["subject"] = Subject.objects.get(pk=self.kwargs['pk'])
         context["form"] = ExamtimeAddForm()
+        if self.request.user.teacher.pk == Teacher.objects.get(teach__role='Main', teach__subject=context['subject']).pk:
+            context["is_main"] = True
         return context
 
     def get_queryset(self):
@@ -187,6 +189,8 @@ class ExamListView(ListView):
         # context["taker"] = final_res
         context["taker"] = info
         context["form"] = ExamAddForm()
+        if self.request.user.teacher.pk == Teacher.objects.get(teach__role='Main', teach__subject=context['examtime'].subject).pk:
+            context["is_main"] = True
         return context
 
     def get_queryset(self):
@@ -536,6 +540,8 @@ class QuestionBankView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["exam"] = get_object_or_404(Exam, pk=self.kwargs['pk'])
+        if self.request.user.teacher.pk == Teacher.objects.get(teach__role='Main', teach__subject=context['exam'].examtime.subject).pk:
+            context["is_main"] = True
         # context["form"] = QuestionCreateForm()
         return context
 

@@ -8,9 +8,9 @@ from classroom.models import *
 
 
 class TeacherSignUpForm(UserCreationForm):
-    first_name = forms.CharField(max_length=50)
-    last_name = forms.CharField(max_length=50)
-    middle_name = forms.CharField(max_length=50)
+    first_name = forms.CharField(max_length=50, required=False)
+    last_name = forms.CharField(max_length=50, required=False)
+    middle_name = forms.CharField(max_length=50, required=False)
     email = forms.EmailField(max_length=254)
     # address = forms.CharField(max_length=255)
     # faculty = forms.CharField(max_length=255)

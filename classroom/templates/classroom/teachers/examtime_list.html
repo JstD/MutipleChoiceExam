@@ -26,10 +26,11 @@
 
 {% block content %}
 <div class="container-fulid">
-
+    {% if is_main %}
     <div class="text-center my-4">
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">Add Examtime</button>
     </div>
+    {% endif %}
     
     <!-- Modal -->
     <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -61,7 +62,9 @@
               <tr>
                 <th scope="col">Date</th>
                 <th scope="col">Semester</th>
+                {% if is_main %}
                 <th scope="col">Action</th>
+                {% endif %}
               </tr>
             </thead>
             <tbody>
@@ -71,7 +74,9 @@
                     <tr>
                         <td class="col-2"><a href="{% url 'teachers:exam_list' examtime.pk %}">{{examtime.date}}</a></td>
                         <td class="col-10">{{ examtime.semester }}</td>
+                        {% if is_main %}
                         <td><button name="btnDelete" value="{{ examtime.pk }}" class="btn btn-primary" type="submit" style="background-color: red;">Delete</button></td>
+                        {% endif %}
                     </tr>
                     {% endfor %} 
                 </form>         
