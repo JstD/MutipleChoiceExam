@@ -113,23 +113,6 @@ def add_examtime(request, pk):
     return redirect('teachers:examtime_list', subject.pk)
     # return render(request, 'classroom/teachers/question_add_form.html', {'quiz': quiz, 'form': form})
 
-@login_required
-@teacher_required
-def send_dictionary(request): 
-    # create data dictionary 
-    dataDictionary = { 
-        'hello': 'World', 
-        'geeks': 'forgeeks', 
-        'ABC': 123, 
-        456: 'abc', 
-        14000605: 1, 
-        'list': ['geeks', 4, 'geeks'], 
-        'dictionary': {'you': 'can', 'send': 'anything', 3: 1} 
-    } 
-    # dump data 
-    dataJSON = dumps(dataDictionary) 
-    return render(request, 'subject_list.html', {'data': dataJSON}) 
-
 
 @login_required
 @teacher_required

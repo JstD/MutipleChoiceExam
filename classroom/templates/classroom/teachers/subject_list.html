@@ -17,14 +17,16 @@ Subject List
         {% for subject in subject_list %} 
         <!-- Display Objects -->
         <div><a href="{% url 'teachers:subject_detail' subject.pk %}">{{ subject.name }}</a></div> 
-    
+        <div id="chartContainer" style="height: 370px; width: 100%;">
+        </div>
+
         <hr/> 
+
         <!-- If objet_list is empty  -->
         {% empty %} 
         <div>No objects yet.</div> 
         {% endfor %} 
     </div>
-    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
 {% endblock %}
 
 
