@@ -37,14 +37,15 @@ class StudentSignUpView(CreateView):
 def studentExam(request):
     today = date.today()
     upcomming_exam = Examtime.objects.all().filter(date__gt=today)
-    to_take_exam = Examtime.objects.all().filter(date__gt=today)
+    to_take_exam = Examtime.objects.all().filter(date=today)
     outdated_exam = Examtime.objects.all().filter(date__lt=today)
     taken_exam = request.user.student.takeexam_set.all()
 
     for exam in taken_exam:
         to_take_exam = to_take_exam.exclude(pk=exam.exam.examtime.pk)
 
-
+    for exam in taken_exam:
+        outdated_exam = outdated_exam.exclude(pk=exam.exam.examtime.pk)
 
     students_exam = {'upcomming_exam': upcomming_exam,
                      'taken_exam': taken_exam,
