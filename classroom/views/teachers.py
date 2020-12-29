@@ -10,6 +10,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import *
 from django.http import *
 from datetime import *
+from json import dumps 
 
 from ..decorators import teacher_required
 from ..forms import *
@@ -243,8 +244,41 @@ class ExamDetailView(DetailView):
             context["role"] = 'Manager'
         if self.request.user.teacher.pk == Teacher.objects.get(teach__role='Main', teach__subject=subject).pk:
             context["role"] = 'Main'
-        context['main_teacher_name'] = exam.mainteacher.user.last_name + ' ' + exam.mainteacher.user.middle_name + ' ' + exam.mainteacher.user.first_name
-        context['manager_name'] = exam.manager.user.last_name + ' ' + exam.manager.user.middle_name + ' ' + exam.manager.user.first_name
+
+        if exam.manager.user.last_name is None:
+            manager_last_name = ""
+        else:
+            manager_last_name = exam.manager.user.last_name
+        if exam.manager.user.middle_name is None:
+            manager_middle_name = ""
+        else:
+            manager_middle_name = exam.manager.user.middle_name
+        if exam.manager.user.first_name is None:
+            manager_first_name = ""
+        else:
+            manager_first_name = exam.manager.user.last_name
+
+        context[
+            'manager_name'] = manager_last_name + ' ' + manager_middle_name + ' ' + manager_first_name
+
+        if exam.mainteacher.user.last_name is None:
+            main_teacher_last_name = ""
+        else:
+            main_teacher_last_name = exam.mainteacher.user.last_name
+        if exam.mainteacher.user.middle_name is None:
+            main_teacher_middle_name = ""
+        else:
+            main_teacher_middle_name = exam.mainteacher.user.middle_name
+        if exam.mainteacher.user.first_name is None:
+            main_teacher_first_name = ""
+        else:
+            main_teacher_first_name = exam.mainteacher.user.last_name
+
+        context[
+            'main_teacher_name'] = main_teacher_last_name + ' ' + main_teacher_middle_name + ' ' + main_teacher_first_name
+
+        # context['main_teacher_name'] = exam.mainteacher.user.last_name + ' ' + exam.mainteacher.user.middle_name + ' ' + exam.mainteacher.user.first_name
+        # context['manager_name'] = exam.manager.user.last_name + ' ' + exam.manager.user.middle_name + ' ' + exam.manager.user.first_name
         return context
 
     def get_queryset(self):
@@ -427,7 +461,22 @@ class QuestionDetailView(DetailView):
             'answer_result_3': question.answerpart_set.get(answerid='C').result,
             'answer_result_4': question.answerpart_set.get(answerid='D').result,
         })
-        context['teacher_name'] = question.teacher.user.last_name + ' ' + question.teacher.user.middle_name + ' ' + question.teacher.user.first_name
+        if question.teacher.user.last_name is None:
+            teacher_last_name = ""
+        else:
+            teacher_last_name = question.teacher.user.last_name
+        if question.teacher.user.middle_name is None:
+            teacher_middle_name = ""
+        else:
+            teacher_middle_name = question.teacher.user.middle_name
+        if question.teacher.user.first_name is None:
+            teacher_first_name = ""
+        else:
+            teacher_first_name = question.teacher.user.last_name
+
+        context[
+            'teacher_name'] = teacher_last_name + ' ' + teacher_middle_name + ' ' + teacher_first_name
+        # context['teacher_name'] = question.teacher.user.last_name + ' ' + question.teacher.user.middle_name + ' ' + question.teacher.user.first_name
         return context
 
     def get_queryset(self):
