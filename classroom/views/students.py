@@ -194,19 +194,22 @@ def takeSpecificExam(request, pk, eid, no_ques):
 
 @method_decorator([login_required, student_required], name='dispatch')
 class ExamResultView(DetailView):
-    model = Subject
+    model = Takeexam
     template_name = 'classroom/students/view_result.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        subject = self.get_object()
-        # examtimes = subject.examtime_set.all()
-        # context["examtimes"] = examtimes
-        # context["form"] = ExamtimeAddForm()
+        takeexam = self.get_object()
+        mark = 0
+        for question_presentation in takeexam.exam.questionpresentation_set.all():
+            for answerorder in question_presentation.answerorder_set.all():
+                if answerorder.option == answerorder.answerid.answerid and answerorder.answerid.result == True:
+                    mark = mark + 1
+        context['mark'] = mark
         return context
 
     def get_queryset(self):
-        return self.request.user.teacher.subjects.all()
+        return Takeexam.objects.all()
 
 # @method_decorator([login_required, student_required], name='dispatch')
 # class StudentInterestsView(UpdateView):
