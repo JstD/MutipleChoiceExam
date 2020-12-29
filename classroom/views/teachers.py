@@ -244,37 +244,6 @@ class ExamDetailView(DetailView):
         if self.request.user.teacher.pk == Teacher.objects.get(teach__role='Main', teach__subject=subject).pk:
             context["role"] = 'Main'
 
-        if exam.mainteacher.user.last_name is None:
-            main_teacher_last_name = ""
-        else:
-            main_teacher_last_name = exam.mainteacher.user.last_name
-        if exam.mainteacher.user.middle_name is None:
-            main_teacher_middle_name = ""
-        else:
-            main_teacher_middle_name = exam.mainteacher.user.middle_name
-        if exam.mainteacher.user.first_name is None:
-            main_teacher_first_name = ""
-        else:
-            main_teacher_first_name = exam.mainteacher.user.last_name
-
-
-        context['main_teacher_name'] = main_teacher_last_name + ' ' + main_teacher_middle_name + ' ' + main_teacher_first_name
-
-        if exam.mainteacher.user.last_name is None:
-            main_teacher_last_name = ""
-        else:
-            main_teacher_last_name = exam.mainteacher.user.last_name
-        if exam.mainteacher.user.middle_name is None:
-            main_teacher_middle_name = ""
-        else:
-            main_teacher_middle_name = exam.mainteacher.user.middle_name
-        if exam.mainteacher.user.first_name is None:
-            main_teacher_first_name = ""
-        else:
-            main_teacher_first_name = exam.mainteacher.user.last_name
-
-        context['main_teacher_name'] = main_teacher_last_name + ' ' + main_teacher_middle_name + ' ' + main_teacher_first_name
-
         if exam.manager.user.last_name is None:
             manager_last_name = ""
         else:
@@ -288,10 +257,26 @@ class ExamDetailView(DetailView):
         else:
             manager_first_name = exam.manager.user.last_name
 
-        context['manager_name'] = manager_last_name + ' ' + manager_middle_name + ' ' + manager_first_name
+        context[
+            'manager_name'] = manager_last_name + ' ' + manager_middle_name + ' ' + manager_first_name
 
+        if exam.mainteacher.user.last_name is None:
+            main_teacher_last_name = ""
+        else:
+            main_teacher_last_name = exam.mainteacher.user.last_name
+        if exam.mainteacher.user.middle_name is None:
+            main_teacher_middle_name = ""
+        else:
+            main_teacher_middle_name = exam.mainteacher.user.middle_name
+        if exam.mainteacher.user.first_name is None:
+            main_teacher_first_name = ""
+        else:
+            main_teacher_first_name = exam.mainteacher.user.last_name
 
+        context[
+            'main_teacher_name'] = main_teacher_last_name + ' ' + main_teacher_middle_name + ' ' + main_teacher_first_name
 
+        # context['main_teacher_name'] = exam.mainteacher.user.last_name + ' ' + exam.mainteacher.user.middle_name + ' ' + exam.mainteacher.user.first_name
         # context['manager_name'] = exam.manager.user.last_name + ' ' + exam.manager.user.middle_name + ' ' + exam.manager.user.first_name
         return context
 
@@ -502,7 +487,6 @@ class QuestionBankView(ListView):
         # print(exam)
         # queryset = Question.objects.filter(questionpresentation__exam=exam)
         question_bank = Question.objects.filter(outcome__in=subject_outcome)
-        print(question_bank)
         question_in_exam = Question.objects.filter(questionpresentation__exam=exam)
         queryset = {'question_bank': question_bank, 'question_in_exam': question_in_exam}
         # ans_set = Answerpart.objects.all()

@@ -40,7 +40,7 @@ class User(AbstractUser):
     faculty = models.CharField(max_length=255, blank=True, null=True)
     is_student = models.BooleanField(default=False)
     is_teacher = models.BooleanField(default=False)
-
+    
     class Meta:
         db_table = 'User'
 
@@ -151,7 +151,6 @@ class Student(models.Model):
     class_field = models.CharField(max_length=20, blank=True, null=True)
     yearofadmission = models.DecimalField(max_digits=4, decimal_places=0, blank=True, null=True)
     exams = models.ManyToManyField(Exam, through=Takeexam)
-    answerorders = models.ManyToManyField(Answerorder)
 
     class Meta:
         # managed = False

@@ -98,7 +98,6 @@ def takeExam(request, pk, no_ques):
                 new_answerorder.save()
 
         else:
-            print("Not post")
             form = TakeExamForm(question=question)
 
         if no_ques == len(question_list) - 1:
@@ -193,6 +192,25 @@ def takeSpecificExam(request, pk, eid, no_ques):
         return redirect('students:student_comming_exam')
 
 
+@method_decorator([login_required, student_required], name='dispatch')
+class ExamResultView(DetailView):
+    model = Takeexam
+    template_name = 'classroom/students/view_result.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        takeexam = self.get_object()
+        mark = 0
+        for question_presentation in takeexam.exam.questionpresentation_set.all():
+            for answerorder in question_presentation.answerorder_set.all():
+                if answerorder.option == answerorder.answerid.answerid and answerorder.answerid.result == True:
+                    mark = mark + 1
+        context['mark'] = mark
+        return context
+
+    def get_queryset(self):
+        return Takeexam.objects.all()
+
 # @method_decorator([login_required, student_required], name='dispatch')
 # class StudentInterestsView(UpdateView):
 #     model = Student
@@ -281,3 +299,4 @@ def takeSpecificExam(request, pk, eid, no_ques):
 #         'form': form,
 #         'progress': progress
 #     })
+
