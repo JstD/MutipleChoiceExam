@@ -29,12 +29,7 @@ class StudentSignUpView(CreateView):
     def form_valid(self, form):
         user = form.save()
         login(self.request, user)
-<<<<<<< HEAD
-        return redirect('students:quiz_list')
-        # return HttpResponse("Hello " + str(user.username))
-=======
         return redirect('home')
->>>>>>> 5dcfb395418ef9f7bce572fce94c10c258f110a6
 
 
 @login_required
@@ -231,24 +226,6 @@ class ExamResultView(DetailView):
 #         return super().form_valid(form)
 
 
-<<<<<<< HEAD
-@method_decorator([login_required, student_required], name='dispatch')
-class QuizListView(ListView):
-    model = Examtime
-    ordering = ('name', )
-    context_object_name = 'quizzes'
-    template_name = 'classroom/students/quiz_list.html'
-
-    def get_queryset(self):
-        student = self.request.user.student
-        student_interests = student.interests.values_list('pk', flat=True)
-        taken_quizzes = student.quizzes.values_list('pk', flat=True)
-        queryset = Quiz.objects.filter(subject__in=student_interests) \
-            .exclude(pk__in=taken_quizzes) \
-            .annotate(questions_count=Count('questions')) \
-            .filter(questions_count__gt=0)
-        return queryset
-=======
 # @method_decorator([login_required, student_required], name='dispatch')
 # class QuizListView(ListView):
 #      model = Examtime
@@ -265,7 +242,6 @@ class QuizListView(ListView):
 #              .annotate(questions_count=Count('questions')) \
 #              .filter(questions_count__gt=0)
 #          return queryset
->>>>>>> 5dcfb395418ef9f7bce572fce94c10c258f110a6
 
 
 # @method_decorator([login_required, student_required], name='dispatch')
