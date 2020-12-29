@@ -54,7 +54,8 @@ class StudentCommingExam(ListView):
         # taken_exam = Takeexam.objects.all().filter(student=self.request.user.student)
         # queryset = {'question_bank': question_bank, 'question_in_exam': question_in_exam}
         today = date.today()
-        queryset = Examtime.objects.all().filter(date__gt=today)
+        # queryset = Examtime.objects.all().filter(date__gt=today)
+        queryset = Takeexam.objects.filter(exam__examtime__date__gt=today, student=self.request.user.student)
         return queryset
 
 @login_required
@@ -121,12 +122,33 @@ def takeExam(request, pk, no_ques):
         new_attempt = Takeexam()
         new_attempt.student = request.user.student
         new_attempt.exam = chosen_exam
+        new_attempt.done = True
         new_attempt.save()
 
         messages.success(request, 'Congratulations! You completed the quiz with success!')
         return redirect('students:student_comming_exam')
 
 
+@method_decorator([login_required, student_required], name='dispatch')
+class TakeExamResultView(DetailView):
+    model = Takeexam
+    # context_object_name = 'quiz'
+    # template_name = 'classroom/teachers/quiz_results.html'
+    template_name = 'classroom/students/view_result.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        takeexam = self.get_object()
+        mark = 0
+        for question_presentation in takeexam.exam.questionpresentation_set.all():
+            for answerorder in question_presentation.answerorder_set.all():
+                if answerorder.option == answerorder.answerid.answerid and answerorder.answerid.result == True:
+                    mark = mark + 1
+        context['mark'] = mark
+        return context
+
+    def get_queryset(self):
+        return Takeexam.objects.all()
 
 
 # @method_decorator([login_required, student_required], name='dispatch')
