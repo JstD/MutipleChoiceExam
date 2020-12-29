@@ -47,38 +47,38 @@ def studentExam(request):
     return render(request, 'classroom/students/student_comming_exam.html', students_exam)
 
 
-# @method_decorator([login_required, student_required], name='dispatch')
-# class StudentCommingExam(ListView):
-#     model = Examtime
-#     context_object_name = 'students_exams'
-#     template_name = 'classroom/students/student_comming_exam.html'
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['taken_exam'] = self.request.user.student.takeexam_set.all()
-#         today = date.today()
-#         context['upcomming_exam'] = Examtime.objects.all().filter(date__gt=today)
-#
-#         return context
-#
-#     def get_queryset(self):
-#         # print(self.kwargs['pk'])
-#         # today = date.today()
-#         # upcomming_exam = Examtime.objects.all().filter(date__gt=today)
-#         #
-#         # # print(taken_info.values('exam'))
-#         # taken_exam = self.request.user.student.takeexam_set.all()
-#         # print(taken_exam)
-#         # print(upcomming_exam)
-#         # # taken_exam = Exam.objects.all().filter(exam__pk__in=taken_info.values('id'))
-#         # # taken_exam = taken_info.values('exam')
-#         # # print(taken_exam)
-#         # queryset = {'upcomming_exam': upcomming_exam, 'taken_exam': taken_exam}
-#
-#         # print(queryset)
-#         today = date.today()
-#         queryset = Examtime.objects.all().filter(date__gt=today)
-#         return queryset
+@method_decorator([login_required, student_required], name='dispatch')
+class StudentCommingExam(ListView):
+    model = Examtime
+    context_object_name = 'students_exams'
+    template_name = 'classroom/students/student_comming_exam.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['taken_exam'] = self.request.user.student.takeexam_set.all()
+        today = date.today()
+        context['upcomming_exam'] = Examtime.objects.all().filter(date__gt=today)
+
+        return context
+
+    def get_queryset(self):
+        # print(self.kwargs['pk'])
+        # today = date.today()
+        # upcomming_exam = Examtime.objects.all().filter(date__gt=today)
+        #
+        # # print(taken_info.values('exam'))
+        # taken_exam = self.request.user.student.takeexam_set.all()
+        # print(taken_exam)
+        # print(upcomming_exam)
+        # # taken_exam = Exam.objects.all().filter(exam__pk__in=taken_info.values('id'))
+        # # taken_exam = taken_info.values('exam')
+        # # print(taken_exam)
+        # queryset = {'upcomming_exam': upcomming_exam, 'taken_exam': taken_exam}
+
+        # print(queryset)
+        today = date.today()
+        queryset = Examtime.objects.all().filter(date__gt=today)
+        return queryset
 
 
 @login_required
@@ -149,6 +149,23 @@ def takeExam(request, pk, no_ques):
         messages.success(request, 'Congratulations! You completed the quiz with success!')
         return redirect('students:student_comming_exam')
 
+
+@method_decorator([login_required, student_required], name='dispatch')
+class ExamResultView(DetailView):
+    model = Subject
+    template_name = 'classroom/students/view_result.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        subject = self.get_object()
+        # examtimes = subject.examtime_set.all()
+        # context["examtimes"] = examtimes
+        # context["form"] = ExamtimeAddForm()
+        return context
+
+    def get_queryset(self):
+        return self.request.user.teacher.subjects.all()
+
 # @method_decorator([login_required, student_required], name='dispatch')
 # class StudentInterestsView(UpdateView):
 #     model = Student
@@ -170,7 +187,7 @@ def takeExam(request, pk, no_ques):
 #      ordering = ('name', )
 #      context_object_name = 'quizzes'
 #      template_name = 'classroom/students/quiz_list.html'
-#
+
 #      def get_queryset(self):
 #          student = self.request.user.student
 #          student_interests = student.interests.values_list('pk', flat=True)
