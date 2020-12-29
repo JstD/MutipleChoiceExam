@@ -32,41 +32,64 @@ class StudentSignUpView(CreateView):
         return redirect('home')
 
 
+@login_required
+@student_required
+def studentExam(request):
+    today = date.today()
+    upcomming_exam = Examtime.objects.all().filter(date__gt=today)
+    taken_exam = request.user.student.takeexam_set.all()
+    print(taken_exam)
+    print(upcomming_exam)
+    # taken_exam = Exam.objects.all().filter(exam__pk__in=taken_info.values('id'))
+    # taken_exam = taken_info.values('exam')
+    # print(taken_exam)
+    students_exam = {'upcomming_exam': upcomming_exam, 'taken_exam': taken_exam}
+    return render(request, 'classroom/students/student_comming_exam.html', students_exam)
+
+
 @method_decorator([login_required, student_required], name='dispatch')
 class StudentCommingExam(ListView):
-
     model = Examtime
-
+    context_object_name = 'students_exams'
     template_name = 'classroom/students/student_comming_exam.html'
-    # context_object_name = 'students_exams'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context['taken_exam'] = Takeexam.objects.all().filter(student=self.request.user.student)
-        # today = date.today()
-        # context['upcomming_exam'] = queryset = Examtime.objects.all().filter(date__gt=today)
+        context['taken_exam'] = self.request.user.student.takeexam_set.all()
+        today = date.today()
+        context['upcomming_exam'] = Examtime.objects.all().filter(date__gt=today)
 
         return context
 
     def get_queryset(self):
-        today = date.today()
+        # print(self.kwargs['pk'])
+        # today = date.today()
         # upcomming_exam = Examtime.objects.all().filter(date__gt=today)
-        # taken_exam = Takeexam.objects.all().filter(student=self.request.user.student)
-        # queryset = {'question_bank': question_bank, 'question_in_exam': question_in_exam}
+        #
+        # # print(taken_info.values('exam'))
+        # taken_exam = self.request.user.student.takeexam_set.all()
+        # print(taken_exam)
+        # print(upcomming_exam)
+        # # taken_exam = Exam.objects.all().filter(exam__pk__in=taken_info.values('id'))
+        # # taken_exam = taken_info.values('exam')
+        # # print(taken_exam)
+        # queryset = {'upcomming_exam': upcomming_exam, 'taken_exam': taken_exam}
+
+        # print(queryset)
         today = date.today()
         # queryset = Examtime.objects.all().filter(date__gt=today)
         queryset = Takeexam.objects.filter(exam__examtime__date__gt=today, student=self.request.user.student)
         return queryset
 
+
 @login_required
 @student_required
 def takeExam(request, pk, no_ques):
-
     no_ques = int(no_ques)
 
     examtime = get_object_or_404(Examtime, pk=pk)
     exam_set = Exam.objects.filter(examtime=examtime)
-    exam_id = randint(0, len(exam_set)-1)
+    exam_id = randint(0, len(exam_set) - 1)
     exam_code = exam_set[exam_id].code
     chosen_exam = Exam.objects.filter(examtime=examtime).get(code=exam_code)
 
@@ -84,9 +107,9 @@ def takeExam(request, pk, no_ques):
             if form.is_valid():
                 student_choice = form.cleaned_data.get('answers')
                 # Get the corresponding ques pres
-                ques_pres = Questionpresentation.objects.get(exam=chosen_exam, question=question, number=no_ques+1)
+                ques_pres = Questionpresentation.objects.get(exam=chosen_exam, question=question, number=no_ques + 1)
                 # Get the corresponding answer
-                answer_obj = Answerpart.objects.get(answerid=student_choice,question=question)
+                answer_obj = Answerpart.objects.get(answerid=student_choice, question=question)
 
                 # Create a new Answerorder
                 new_answerorder = Answerorder()
@@ -96,7 +119,7 @@ def takeExam(request, pk, no_ques):
 
                 # Delete if exists a similar answerorder:
                 try:
-                    todelete = Answerorder.objects.get(qpresentation=ques_pres,studentid=request.user.student)
+                    todelete = Answerorder.objects.get(qpresentation=ques_pres, studentid=request.user.student)
                 except Answerorder.DoesNotExist:
                     todelete = None
 
@@ -118,7 +141,7 @@ def takeExam(request, pk, no_ques):
 
     else:
 
-        #Save the student attempt
+        # Save the student attempt
         new_attempt = Takeexam()
         new_attempt.student = request.user.student
         new_attempt.exam = chosen_exam
@@ -130,26 +153,20 @@ def takeExam(request, pk, no_ques):
 
 
 @method_decorator([login_required, student_required], name='dispatch')
-class TakeExamResultView(DetailView):
-    model = Takeexam
-    # context_object_name = 'quiz'
-    # template_name = 'classroom/teachers/quiz_results.html'
+class ExamResultView(DetailView):
+    model = Subject
     template_name = 'classroom/students/view_result.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        takeexam = self.get_object()
-        mark = 0
-        for question_presentation in takeexam.exam.questionpresentation_set.all():
-            for answerorder in question_presentation.answerorder_set.all():
-                if answerorder.option == answerorder.answerid.answerid and answerorder.answerid.result == True:
-                    mark = mark + 1
-        context['mark'] = mark
+        subject = self.get_object()
+        # examtimes = subject.examtime_set.all()
+        # context["examtimes"] = examtimes
+        # context["form"] = ExamtimeAddForm()
         return context
 
     def get_queryset(self):
-        return Takeexam.objects.all()
-
+        return self.request.user.teacher.subjects.all()
 
 # @method_decorator([login_required, student_required], name='dispatch')
 # class StudentInterestsView(UpdateView):
@@ -172,7 +189,7 @@ class TakeExamResultView(DetailView):
 #      ordering = ('name', )
 #      context_object_name = 'quizzes'
 #      template_name = 'classroom/students/quiz_list.html'
-#
+
 #      def get_queryset(self):
 #          student = self.request.user.student
 #          student_interests = student.interests.values_list('pk', flat=True)

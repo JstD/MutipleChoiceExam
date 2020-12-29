@@ -10,6 +10,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import *
 from django.http import *
 from datetime import *
+from json import dumps 
 
 from ..decorators import teacher_required
 from ..forms import *
