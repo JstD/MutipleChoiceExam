@@ -81,5 +81,35 @@
           </table>
     </div>
 
+    <div>
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                    <th scope="col">Student id</th>
+                    <th scope="col">First name</th>
+                    <th scope="col">Last name</th>
+                  <th scope="col">Year of admission</th>
+                  <th scope="col">Score</th>
+              </tr>
+            </thead>
+            <tbody>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    {% for taker in taker %}
+                    <tr>
+                        <td class=""><a href="}">{{taker.student.pk}}</a></td>
+                        <td class="">{{taker.student.user.first_name}}</td>
+                        <td class="">{{taker.student.user.last_name}}</td>
+                        <td class="">{{taker.student.user.yearofadmission}}</td>
+<!--                        <td><button name="btnDelete" value="{{exam.pk}}" class="btn btn-primary" type="submit" style="background-color: red;">Delete</button></td>-->
+                    </tr>
+                    {% endfor %}
+                </form>
+            </tbody>
+          </table>
+    </div>
+
+
+
 </div>
 {% endblock %}

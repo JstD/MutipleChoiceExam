@@ -139,8 +139,20 @@ class ExamListView(ListView):
     template_name = 'classroom/teachers/exam_list.html'
 
     def get_context_data(self, **kwargs):
+        taken_exam = []
+        final_res = None
         context = super().get_context_data(**kwargs)
         context["examtime"] = get_object_or_404(Examtime, pk=self.kwargs['pk'])
+        #Get student who take this examtime
+        # Exams = self.queryset
+        exam_set = Examtime.objects.get(pk=self.kwargs['pk']).exam_set.all()
+        for exam in exam_set:
+            taken_exam.append(Takeexam.objects.filter(exam=exam))
+
+        for i in range(len(taken_exam)-1):
+            final_res = taken_exam[i] | taken_exam[i+1]
+        print(final_res)
+        context["taker"] = final_res
         context["form"] = ExamAddForm()
         return context
 
