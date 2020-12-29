@@ -93,18 +93,17 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'multiple_choice_exam',
-<<<<<<< HEAD
         'USER': 'jstD',
         'PASSWORD': 'Dung_2000',
-=======
-        'USER': 'root',
-        'PASSWORD': '8pJ-:G&b}aPUP9*6',
->>>>>>> a5a6bf9668ec07c0865d2d35887654167d2c866d
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'HOST': 'localhost'
     }
 }
-
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',

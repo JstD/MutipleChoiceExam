@@ -40,7 +40,7 @@ class User(AbstractUser):
     faculty = models.CharField(max_length=255, blank=True, null=True)
     is_student = models.BooleanField(default=False)
     is_teacher = models.BooleanField(default=False)
-
+    
     class Meta:
         db_table = 'User'
 

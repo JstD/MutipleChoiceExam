@@ -26,8 +26,8 @@ class StudentSignUpView(CreateView):
     def form_valid(self, form):
         user = form.save()
         login(self.request, user)
-        # return redirect('students:quiz_list')
-        return HttpResponse("Hello " + str(user.username))
+        return redirect('students:quiz_list')
+        # return HttpResponse("Hello " + str(user.username))
 
 @method_decorator([login_required, student_required], name='dispatch')
 class StudentSubjectView(ListView):
@@ -63,20 +63,20 @@ class StudentExamGet(ListView):
 
 @method_decorator([login_required, student_required], name='dispatch')
 class QuizListView(ListView):
-     model = Examtime
-     ordering = ('name', )
-     context_object_name = 'quizzes'
-     template_name = 'classroom/students/quiz_list.html'
+    model = Examtime
+    ordering = ('name', )
+    context_object_name = 'quizzes'
+    template_name = 'classroom/students/quiz_list.html'
 
-     def get_queryset(self):
-         student = self.request.user.student
-         student_interests = student.interests.values_list('pk', flat=True)
-         taken_quizzes = student.quizzes.values_list('pk', flat=True)
-         queryset = Quiz.objects.filter(subject__in=student_interests) \
-             .exclude(pk__in=taken_quizzes) \
-             .annotate(questions_count=Count('questions')) \
-             .filter(questions_count__gt=0)
-         return queryset
+    def get_queryset(self):
+        student = self.request.user.student
+        student_interests = student.interests.values_list('pk', flat=True)
+        taken_quizzes = student.quizzes.values_list('pk', flat=True)
+        queryset = Quiz.objects.filter(subject__in=student_interests) \
+            .exclude(pk__in=taken_quizzes) \
+            .annotate(questions_count=Count('questions')) \
+            .filter(questions_count__gt=0)
+        return queryset
 
 
 # @method_decorator([login_required, student_required], name='dispatch')
