@@ -32,37 +32,53 @@ class StudentSignUpView(CreateView):
         return redirect('home')
 
 
-@method_decorator([login_required, student_required], name='dispatch')
-class StudentCommingExam(ListView):
-    model = Examtime
-    context_object_name = 'students_exams'
-    template_name = 'classroom/students/student_comming_exam.html'
+@login_required
+@student_required
+def studentExam(request):
+    today = date.today()
+    upcomming_exam = Examtime.objects.all().filter(date__gt=today)
+    taken_exam = request.user.student.takeexam_set.all()
+    print(taken_exam)
+    print(upcomming_exam)
+    # taken_exam = Exam.objects.all().filter(exam__pk__in=taken_info.values('id'))
+    # taken_exam = taken_info.values('exam')
+    # print(taken_exam)
+    students_exam = {'upcomming_exam': upcomming_exam, 'taken_exam': taken_exam}
+    return render(request, 'classroom/students/student_comming_exam.html', students_exam)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # context['taken_exam'] = Takeexam.objects.all().filter(student=self.request.user.student)
-        today = date.today()
-        # context['upcomming_exam'] = Examtime.objects.all().filter(date__gt=today)
 
-        return context
-
-    def get_queryset(self):
-        # print(self.kwargs['pk'])
-        today = date.today()
-        upcomming_exam = Examtime.objects.all().filter(date__gt=today)
-        taken_info = Takeexam.objects.all().filter(student=self.request.user.student)
-        # print(taken_info.values('exam'))
-        taken_exam = self.request.user.student.takeexam_set.all()
-        print(taken_exam)
-        print(upcomming_exam)
-        # taken_exam = Exam.objects.all().filter(exam__pk__in=taken_info.values('id'))
-        # taken_exam = taken_info.values('exam')
-        # print(taken_exam)
-        queryset = {'upcomming_exam': upcomming_exam, 'taken_exam': taken_exam}
-        print(queryset)
-        # today = date.today()
-        # queryset = Examtime.objects.all().filter(date__gt=today)
-        return queryset
+# @method_decorator([login_required, student_required], name='dispatch')
+# class StudentCommingExam(ListView):
+#     model = Examtime
+#     context_object_name = 'students_exams'
+#     template_name = 'classroom/students/student_comming_exam.html'
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['taken_exam'] = self.request.user.student.takeexam_set.all()
+#         today = date.today()
+#         context['upcomming_exam'] = Examtime.objects.all().filter(date__gt=today)
+#
+#         return context
+#
+#     def get_queryset(self):
+#         # print(self.kwargs['pk'])
+#         # today = date.today()
+#         # upcomming_exam = Examtime.objects.all().filter(date__gt=today)
+#         #
+#         # # print(taken_info.values('exam'))
+#         # taken_exam = self.request.user.student.takeexam_set.all()
+#         # print(taken_exam)
+#         # print(upcomming_exam)
+#         # # taken_exam = Exam.objects.all().filter(exam__pk__in=taken_info.values('id'))
+#         # # taken_exam = taken_info.values('exam')
+#         # # print(taken_exam)
+#         # queryset = {'upcomming_exam': upcomming_exam, 'taken_exam': taken_exam}
+#
+#         # print(queryset)
+#         today = date.today()
+#         queryset = Examtime.objects.all().filter(date__gt=today)
+#         return queryset
 
 
 @login_required
