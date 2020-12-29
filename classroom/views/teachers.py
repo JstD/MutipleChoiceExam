@@ -460,7 +460,22 @@ class QuestionDetailView(DetailView):
             'answer_result_3': question.answerpart_set.get(answerid='C').result,
             'answer_result_4': question.answerpart_set.get(answerid='D').result,
         })
-        context['teacher_name'] = question.teacher.user.last_name + ' ' + question.teacher.user.middle_name + ' ' + question.teacher.user.first_name
+        if question.teacher.user.last_name is None:
+            teacher_last_name = ""
+        else:
+            teacher_last_name = question.teacher.user.last_name
+        if question.teacher.user.middle_name is None:
+            teacher_middle_name = ""
+        else:
+            teacher_middle_name = question.teacher.user.middle_name
+        if question.teacher.user.first_name is None:
+            teacher_first_name = ""
+        else:
+            teacher_first_name = question.teacher.user.last_name
+
+        context[
+            'teacher_name'] = teacher_last_name + ' ' + teacher_middle_name + ' ' + teacher_first_name
+        # context['teacher_name'] = question.teacher.user.last_name + ' ' + question.teacher.user.middle_name + ' ' + question.teacher.user.first_name
         return context
 
     def get_queryset(self):

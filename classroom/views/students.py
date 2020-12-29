@@ -43,8 +43,6 @@ def studentExam(request):
 
     for exam in taken_exam:
         to_take_exam = to_take_exam.exclude(pk=exam.exam.examtime.pk)
-
-    for exam in taken_exam:
         outdated_exam = outdated_exam.exclude(pk=exam.exam.examtime.pk)
 
     students_exam = {'upcomming_exam': upcomming_exam,
