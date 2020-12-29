@@ -182,6 +182,7 @@ def takeSpecificExam(request, pk, eid, no_ques):
         new_attempt = Takeexam()
         new_attempt.student = request.user.student
         new_attempt.exam = chosen_exam
+        new_attempt.done = True
         new_attempt.save()
 
         messages.success(request, 'Congratulations! You completed the quiz with success!')
@@ -197,10 +198,25 @@ class ExamResultView(DetailView):
         context = super().get_context_data(**kwargs)
         takeexam = self.get_object()
         mark = 0
+        context['results'] = []
         for question_presentation in takeexam.exam.questionpresentation_set.all():
             for answerorder in question_presentation.answerorder_set.all():
                 if answerorder.option == answerorder.answerid.answerid and answerorder.answerid.result == True:
                     mark = mark + 1
+            class Result(object):
+                pass
+            result = Result()
+            result.order = question_presentation.number
+            result.question = question_presentation.question
+            result.answer_a = question_presentation.question.answerpart_set.get(answerid='A')
+            result.answer_b = question_presentation.question.answerpart_set.get(answerid='B') 
+            result.answer_c = question_presentation.question.answerpart_set.get(answerid='C') 
+            result.answer_d = question_presentation.question.answerpart_set.get(answerid='D') 
+            result.student_choice = question_presentation.answerorder_set.all()[0].option
+            context['results'].append(result)
+            
+        # context['question_presentations'] = takeexam.exam.questionpresentation_set.all()
+        context['total'] = len(context['results'])
         context['mark'] = mark
         return context
 
