@@ -213,7 +213,7 @@ class ExamResultView(DetailView):
             result.answer_b = question_presentation.question.answerpart_set.get(answerid='B') 
             result.answer_c = question_presentation.question.answerpart_set.get(answerid='C') 
             result.answer_d = question_presentation.question.answerpart_set.get(answerid='D') 
-            result.student_choice = question_presentation.answerorder_set.all()[0].option
+            result.student_choice = question_presentation.answerorder_set.filter(studentid=self.request.user.student)[0].option
             context['results'].append(result)
             
         # context['question_presentations'] = takeexam.exam.questionpresentation_set.all()
