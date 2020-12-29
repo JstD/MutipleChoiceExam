@@ -34,45 +34,45 @@ class StudentSignUpView(CreateView):
 
 @method_decorator([login_required, student_required], name='dispatch')
 class StudentCommingExam(ListView):
-
     model = Examtime
-
-    template_name = 'classroom/students/student_comming_exam.html'
     context_object_name = 'students_exams'
+    template_name = 'classroom/students/student_comming_exam.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # context['taken_exam'] = Takeexam.objects.all().filter(student=self.request.user.student)
-        # today = date.today()
-        # context['upcomming_exam'] = queryset = Examtime.objects.all().filter(date__gt=today)
+        today = date.today()
+        # context['upcomming_exam'] = Examtime.objects.all().filter(date__gt=today)
 
         return context
 
     def get_queryset(self):
+        # print(self.kwargs['pk'])
         today = date.today()
         upcomming_exam = Examtime.objects.all().filter(date__gt=today)
         taken_info = Takeexam.objects.all().filter(student=self.request.user.student)
         # print(taken_info.values('exam'))
-        taken_exam=self.request.user.student.takeexam_set
+        taken_exam = self.request.user.student.takeexam_set.all()
         print(taken_exam)
         print(upcomming_exam)
         # taken_exam = Exam.objects.all().filter(exam__pk__in=taken_info.values('id'))
-        taken_exam = taken_info.values('exam')
-        print(taken_exam)
+        # taken_exam = taken_info.values('exam')
+        # print(taken_exam)
         queryset = {'upcomming_exam': upcomming_exam, 'taken_exam': taken_exam}
+        print(queryset)
         # today = date.today()
         # queryset = Examtime.objects.all().filter(date__gt=today)
         return queryset
 
+
 @login_required
 @student_required
 def takeExam(request, pk, no_ques):
-
     no_ques = int(no_ques)
 
     examtime = get_object_or_404(Examtime, pk=pk)
     exam_set = Exam.objects.filter(examtime=examtime)
-    exam_id = randint(0, len(exam_set)-1)
+    exam_id = randint(0, len(exam_set) - 1)
     exam_code = exam_set[exam_id].code
     chosen_exam = Exam.objects.filter(examtime=examtime).get(code=exam_code)
 
@@ -90,9 +90,9 @@ def takeExam(request, pk, no_ques):
             if form.is_valid():
                 student_choice = form.cleaned_data.get('answers')
                 # Get the corresponding ques pres
-                ques_pres = Questionpresentation.objects.get(exam=chosen_exam, question=question, number=no_ques+1)
+                ques_pres = Questionpresentation.objects.get(exam=chosen_exam, question=question, number=no_ques + 1)
                 # Get the corresponding answer
-                answer_obj = Answerpart.objects.get(answerid=student_choice,question=question)
+                answer_obj = Answerpart.objects.get(answerid=student_choice, question=question)
 
                 # Create a new Answerorder
                 new_answerorder = Answerorder()
@@ -102,7 +102,7 @@ def takeExam(request, pk, no_ques):
 
                 # Delete if exists a similar answerorder:
                 try:
-                    todelete = Answerorder.objects.get(qpresentation=ques_pres,studentid=request.user.student)
+                    todelete = Answerorder.objects.get(qpresentation=ques_pres, studentid=request.user.student)
                 except Answerorder.DoesNotExist:
                     todelete = None
 
@@ -124,7 +124,7 @@ def takeExam(request, pk, no_ques):
 
     else:
 
-        #Save the student attempt
+        # Save the student attempt
         new_attempt = Takeexam()
         new_attempt.student = request.user.student
         new_attempt.exam = chosen_exam
@@ -132,9 +132,6 @@ def takeExam(request, pk, no_ques):
 
         messages.success(request, 'Congratulations! You completed the quiz with success!')
         return redirect('students:student_comming_exam')
-
-
-
 
 # @method_decorator([login_required, student_required], name='dispatch')
 # class StudentInterestsView(UpdateView):
