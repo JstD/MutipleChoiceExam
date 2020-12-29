@@ -118,7 +118,6 @@ class Takeexam(models.Model):
     note = models.CharField(max_length=1000, blank=True, null=True)
     student = models.ForeignKey('Student', on_delete=models.CASCADE)
     exam = models.ForeignKey('Exam', on_delete=models.CASCADE)
-    done = models.BooleanField(default=False)
 
     class Meta:
         # managed = False
