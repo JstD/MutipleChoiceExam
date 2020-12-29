@@ -19,7 +19,7 @@
 
     {{ info.2|crispy }}
     <button type="submit" class="btn btn-primary">Submit </button>
-    <a href="{% url 'students:student_take_exam' pk=info.3.pk no_ques=info.0 %}" class="btn btn-primary">
+    <a href="{% url 'students:student_specific_exam' pk=info.3.pk eid=info.5 no_ques=info.0 %}" class="btn btn-primary">
         {{ info.4 }}
     </a>
 </form>
